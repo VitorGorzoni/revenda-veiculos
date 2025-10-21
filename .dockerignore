@@ -1,0 +1,67 @@
+# Arquivos e diretórios a serem ignorados no build Docker
+
+# Arquivos de build e target
+target/
+*.jar
+*.war
+*.ear
+
+# Arquivos IDE
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.settings/
+.project
+.classpath
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Logs
+logs/
+*.log
+
+# Arquivos temporários
+tmp/
+temp/
+
+# Git
+.git/
+.gitignore
+README.md
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Kubernetes
+k8s/
+*.yaml
+*.yml
+
+# Scripts
+scripts/
+*.sh
+*.bat
+*.ps1
+
+# Dependências Node (se houver frontend)
+node_modules/
+npm-debug.log*
+
+# Arquivos de teste
+src/test/
+**/*Test.java
+**/*Tests.java
+
+# Arquivos de configuração local
+application-local.yml
+application-dev.yml
+*.properties.local
