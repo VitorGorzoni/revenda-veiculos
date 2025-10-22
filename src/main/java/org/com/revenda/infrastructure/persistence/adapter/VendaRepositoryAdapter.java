@@ -1,7 +1,7 @@
 package org.com.revenda.infrastructure.persistence.adapter;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.com.revenda.domain.entity.Venda;
 import org.com.revenda.domain.repository.VendaRepository;
 import org.com.revenda.infrastructure.persistence.mapper.VendaMapper;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-@Log4j2
+@Slf4j
 public class VendaRepositoryAdapter implements VendaRepository {
 
     private final VendaJpaRepository jpaRepository;

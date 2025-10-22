@@ -1,13 +1,13 @@
 package org.com.revenda.application.usecase;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.com.revenda.domain.entity.Veiculo;
 import org.com.revenda.domain.exception.VeiculoNaoEncontradoException;
 import org.com.revenda.domain.repository.VeiculoRepository;
 
 @RequiredArgsConstructor
-@Log4j2
+@Slf4j
 public class EditarVeiculoUseCase {
 
     private final VeiculoRepository veiculoRepository;

@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.com.revenda.domain.entity.StatusVeiculo;
 import org.com.revenda.domain.entity.Veiculo;
 import org.com.revenda.application.service.*;
@@ -26,7 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/veiculos")
 @RequiredArgsConstructor
-@Log4j2
+@Slf4j
 @Tag(name = "Veículos", description = "Operações relacionadas aos veículos")
 public class VeiculoController {
 

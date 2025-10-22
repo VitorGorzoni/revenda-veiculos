@@ -1,7 +1,7 @@
 package org.com.revenda.application.usecase;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.com.revenda.domain.entity.Veiculo;
 import org.com.revenda.domain.entity.Venda;
 import org.com.revenda.domain.repository.VeiculoRepository;
@@ -10,7 +10,7 @@ import org.com.revenda.domain.repository.VendaRepository;
 import java.math.BigDecimal;
 
 @RequiredArgsConstructor
-@Log4j2
+@Slf4j
 public class VenderVeiculoUseCase {
 
     private final VeiculoRepository veiculoRepository;
