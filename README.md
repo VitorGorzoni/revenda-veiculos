@@ -822,7 +822,7 @@ Este projeto está sob a licença MIT.
 
 ## 👥 Autores
 
-- **Vitor Gorzoni** - Desenvolvimento inicial
+- **Vitor Gorzoni** - Desenvolvedor
 
 ---
 

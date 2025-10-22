@@ -1,0 +1,409 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2025-10-22T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "wrk_revenda_veiculos",
+      "_type": "workspace",
+      "name": "Revenda de Veículos",
+      "description": "API REST para gerenciamento de revenda de veículos - Clean Architecture & SOLID",
+      "scope": "collection",
+      "parentId": null
+    },
+    {
+      "_id": "env_base",
+      "_type": "environment",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:8080",
+        "veiculo_id": "1",
+        "codigo_pagamento": "PAG-ABC12345"
+      },
+      "dataPropertyOrder": {
+        "&base_url": 0,
+        "&veiculo_id": 1,
+        "&codigo_pagamento": 2
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1,
+      "parentId": "wrk_revenda_veiculos"
+    },
+    {
+      "_id": "env_docker",
+      "_type": "environment",
+      "name": "Docker",
+      "data": {
+        "base_url": "http://localhost:8080"
+      },
+      "dataPropertyOrder": {
+        "&base_url": 0
+      },
+      "color": "#4285F4",
+      "isPrivate": false,
+      "metaSortKey": 2,
+      "parentId": "env_base"
+    },
+    {
+      "_id": "env_kubernetes",
+      "_type": "environment",
+      "name": "Kubernetes (Minikube)",
+      "data": {
+        "base_url": "http://revenda-veiculos.local"
+      },
+      "dataPropertyOrder": {
+        "&base_url": 0
+      },
+      "color": "#326CE5",
+      "isPrivate": false,
+      "metaSortKey": 3,
+      "parentId": "env_base"
+    },
+    {
+      "_id": "fld_veiculos",
+      "_type": "request_group",
+      "name": "Veículos",
+      "description": "Endpoints para gerenciamento de veículos",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": 1,
+      "parentId": "wrk_revenda_veiculos"
+    },
+    {
+      "_id": "req_listar_todos_veiculos",
+      "_type": "request",
+      "name": "Listar Todos os Veículos",
+      "description": "Lista todos os veículos cadastrados no sistema",
+      "url": "{{ _.base_url }}/api/veiculos",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 1,
+      "isPrivate": false,
+      "parentId": "fld_veiculos"
+    },
+    {
+      "_id": "req_listar_veiculos_disponiveis",
+      "_type": "request",
+      "name": "Listar Veículos Disponíveis",
+      "description": "Lista apenas veículos com status DISPONIVEL",
+      "url": "{{ _.base_url }}/api/veiculos",
+      "method": "GET",
+      "body": {},
+      "parameters": [
+        {
+          "name": "status",
+          "value": "DISPONIVEL",
+          "description": "Filtro por status",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 2,
+      "isPrivate": false,
+      "parentId": "fld_veiculos"
+    },
+    {
+      "_id": "req_listar_veiculos_vendidos",
+      "_type": "request",
+      "name": "Listar Veículos Vendidos",
+      "description": "Lista apenas veículos com status VENDIDO",
+      "url": "{{ _.base_url }}/api/veiculos",
+      "method": "GET",
+      "body": {},
+      "parameters": [
+        {
+          "name": "status",
+          "value": "VENDIDO",
+          "description": "Filtro por status",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 3,
+      "isPrivate": false,
+      "parentId": "fld_veiculos"
+    },
+    {
+      "_id": "req_buscar_veiculo_por_id",
+      "_type": "request",
+      "name": "Buscar Veículo por ID",
+      "description": "Busca um veículo específico pelo seu ID",
+      "url": "{{ _.base_url }}/api/veiculos/{{ _.veiculo_id }}",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 4,
+      "isPrivate": false,
+      "parentId": "fld_veiculos"
+    },
+    {
+      "_id": "req_cadastrar_veiculo",
+      "_type": "request",
+      "name": "Cadastrar Veículo",
+      "description": "Cadastra um novo veículo no sistema",
+      "url": "{{ _.base_url }}/api/veiculos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"marca\": \"Toyota\",\n  \"modelo\": \"Corolla\",\n  \"ano\": 2023,\n  \"cor\": \"Prata\",\n  \"preco\": 120000.00,\n  \"placa\": \"ABC1234\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": 5,
+      "isPrivate": false,
+      "parentId": "fld_veiculos"
+    },
+    {
+      "_id": "req_cadastrar_veiculo_honda",
+      "_type": "request",
+      "name": "Cadastrar Veículo - Honda Civic",
+      "description": "Exemplo de cadastro de Honda Civic",
+      "url": "{{ _.base_url }}/api/veiculos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"marca\": \"Honda\",\n  \"modelo\": \"Civic\",\n  \"ano\": 2024,\n  \"cor\": \"Preto\",\n  \"preco\": 135000.00,\n  \"placa\": \"XYZ5678\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": 6,
+      "isPrivate": false,
+      "parentId": "fld_veiculos"
+    },
+    {
+      "_id": "req_cadastrar_veiculo_volkswagen",
+      "_type": "request",
+      "name": "Cadastrar Veículo - VW Gol",
+      "description": "Exemplo de cadastro de Volkswagen Gol",
+      "url": "{{ _.base_url }}/api/veiculos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"marca\": \"Volkswagen\",\n  \"modelo\": \"Gol\",\n  \"ano\": 2022,\n  \"cor\": \"Branco\",\n  \"preco\": 55000.00,\n  \"placa\": \"DEF9012\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": 7,
+      "isPrivate": false,
+      "parentId": "fld_veiculos"
+    },
+    {
+      "_id": "req_editar_veiculo",
+      "_type": "request",
+      "name": "Editar Veículo",
+      "description": "Edita os dados de um veículo existente (apenas se estiver DISPONIVEL)",
+      "url": "{{ _.base_url }}/api/veiculos/{{ _.veiculo_id }}",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"marca\": \"Toyota\",\n  \"modelo\": \"Corolla XEI\",\n  \"ano\": 2024,\n  \"cor\": \"Preto\",\n  \"preco\": 135000.00,\n  \"placa\": \"ABC1234\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": 8,
+      "isPrivate": false,
+      "parentId": "fld_veiculos"
+    },
+    {
+      "_id": "fld_vendas",
+      "_type": "request_group",
+      "name": "Vendas",
+      "description": "Endpoints para processar vendas de veículos",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": 2,
+      "parentId": "wrk_revenda_veiculos"
+    },
+    {
+      "_id": "req_vender_veiculo",
+      "_type": "request",
+      "name": "Vender Veículo",
+      "description": "Efetua a venda de um veículo e gera código de pagamento",
+      "url": "{{ _.base_url }}/api/veiculos/{{ _.veiculo_id }}/venda",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"cpfCliente\": \"123.456.789-00\",\n  \"nomeCliente\": \"João Silva\",\n  \"valorVenda\": 120000.00\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": 1,
+      "isPrivate": false,
+      "parentId": "fld_vendas"
+    },
+    {
+      "_id": "req_vender_veiculo_maria",
+      "_type": "request",
+      "name": "Vender Veículo - Maria Santos",
+      "description": "Exemplo de venda para cliente Maria Santos",
+      "url": "{{ _.base_url }}/api/veiculos/2/venda",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"cpfCliente\": \"987.654.321-00\",\n  \"nomeCliente\": \"Maria Santos\",\n  \"valorVenda\": 135000.00\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": 2,
+      "isPrivate": false,
+      "parentId": "fld_vendas"
+    },
+    {
+      "_id": "fld_webhook",
+      "_type": "request_group",
+      "name": "Webhook - Pagamento",
+      "description": "Endpoints de webhook para processar confirmação/cancelamento de pagamentos",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": 3,
+      "parentId": "wrk_revenda_veiculos"
+    },
+    {
+      "_id": "req_confirmar_pagamento",
+      "_type": "request",
+      "name": "Confirmar Pagamento",
+      "description": "Webhook para confirmar o pagamento de uma venda",
+      "url": "{{ _.base_url }}/api/webhook/pagamento",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigoPagamento\": \"{{ _.codigo_pagamento }}\",\n  \"status\": \"CONFIRMADO\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": 1,
+      "isPrivate": false,
+      "parentId": "fld_webhook"
+    },
+    {
+      "_id": "req_cancelar_pagamento",
+      "_type": "request",
+      "name": "Cancelar Pagamento",
+      "description": "Webhook para cancelar o pagamento de uma venda",
+      "url": "{{ _.base_url }}/api/webhook/pagamento",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigoPagamento\": \"{{ _.codigo_pagamento }}\",\n  \"status\": \"CANCELADO\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": 2,
+      "isPrivate": false,
+      "parentId": "fld_webhook"
+    },
+    {
+      "_id": "fld_health",
+      "_type": "request_group",
+      "name": "Health & Docs",
+      "description": "Endpoints de documentação e health check",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": 4,
+      "parentId": "wrk_revenda_veiculos"
+    },
+    {
+      "_id": "req_swagger_ui",
+      "_type": "request",
+      "name": "Swagger UI",
+      "description": "Acessa a documentação interativa da API",
+      "url": "{{ _.base_url }}/swagger-ui.html",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 1,
+      "isPrivate": false,
+      "parentId": "fld_health"
+    },
+    {
+      "_id": "req_openapi_docs",
+      "_type": "request",
+      "name": "OpenAPI Docs (JSON)",
+      "description": "Retorna a especificação OpenAPI em JSON",
+      "url": "{{ _.base_url }}/api-docs",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 2,
+      "isPrivate": false,
+      "parentId": "fld_health"
+    },
+    {
+      "_id": "req_actuator_health",
+      "_type": "request",
+      "name": "Health Check",
+      "description": "Verifica o status de saúde da aplicação",
+      "url": "{{ _.base_url }}/actuator/health",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 3,
+      "isPrivate": false,
+      "parentId": "fld_health"
+    }
+  ]
+}
+

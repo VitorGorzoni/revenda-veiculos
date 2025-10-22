@@ -36,7 +36,6 @@ public class VeiculoController {
     private final ListarVeiculosPorStatusApplicationService listarVeiculosPorStatusApplicationService;
     private final ListarTodosVeiculosApplicationService listarTodosVeiculosApplicationService;
     private final BuscarVeiculoPorIdApplicationService buscarVeiculoPorIdApplicationService;
-    private final ListarVeiculosVendidosApplicationService listarVeiculosVendidosApplicationService;
     private final VeiculoDtoMapper veiculoMapper;
     private final VendaDtoMapper vendaMapper;
 
@@ -130,22 +129,6 @@ public class VeiculoController {
         VendaResponse response = vendaMapper.toResponse(venda);
 
         log.info("Venda realizada com sucesso. Código pagamento: {}", venda.getCodigoPagamento());
-
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/vendidos")
-    @Operation(summary = "Listar veículos vendidos", description = "Lista todos os veículos vendidos com informações da venda")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Lista de veículos vendidos")
-    })
-    public ResponseEntity<List<org.com.revenda.presentation.dto.response.VendaComVeiculoResponse>> listarVeiculosVendidos() {
-        log.info("Listando todos os veículos vendidos");
-
-        var vendas = listarVeiculosVendidosApplicationService.execute();
-        var response = vendaMapper.toVendaComVeiculoResponseList(vendas);
-
-        log.info("Total de veículos vendidos: {}", response.size());
 
         return ResponseEntity.ok(response);
     }

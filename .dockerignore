@@ -34,34 +34,17 @@ temp/
 # Git
 .git/
 .gitignore
-README.md
 
 # Docker
-Dockerfile*
+Dockerfile.dev
 docker-compose*.yml
 .dockerignore
 
 # Kubernetes
 k8s/
-*.yaml
-*.yml
 
 # Scripts
 scripts/
-*.sh
-*.bat
-*.ps1
 
-# Dependências Node (se houver frontend)
-node_modules/
-npm-debug.log*
-
-# Arquivos de teste
-src/test/
-**/*Test.java
-**/*Tests.java
-
-# Arquivos de configuração local
-application-local.yml
-application-dev.yml
-*.properties.local
+# Documentação
+README.md

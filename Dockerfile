@@ -3,7 +3,7 @@
 FROM maven:3.9.5-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# Copiar apenas pom.xml primeiro para cachear dependências
+# Copiar pom.xml primeiro para cachear dependências
 COPY pom.xml .
 
 # Baixar dependências (essa camada será cacheada se pom.xml não mudar)
@@ -12,8 +12,9 @@ RUN mvn dependency:go-offline -B
 # Agora copiar o código fonte
 COPY src ./src
 
-# Build da aplicação COM testes unitários
-RUN mvn clean package
+# Executar testes E build (verbose para ver output)
+# Se os testes falharem, o build para aqui
+RUN mvn clean package -B -e
 
 # Runtime stage
 FROM eclipse-temurin:21-jre-alpine
