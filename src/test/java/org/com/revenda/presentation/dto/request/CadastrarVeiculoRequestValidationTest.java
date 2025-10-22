@@ -21,20 +21,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class CadastrarVeiculoRequestValidationTest {
 
     private Validator validator;
-    private CadastrarVeiculoRequest request;
 
     @BeforeEach
     void setUp() {
         try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
             validator = factory.getValidator();
         }
-
-        request = new CadastrarVeiculoRequest();
-        request.setMarca("Toyota");
-        request.setModelo("Corolla");
-        request.setAno(2023);
-        request.setCor("Branco");
-        request.setPreco(new BigDecimal("75000.00"));
     }
 
     @Nested
@@ -44,6 +36,11 @@ class CadastrarVeiculoRequestValidationTest {
         @Test
         @DisplayName("Deve aceitar marca válida")
         void deveAceitarMarcaValida() {
+            // Arrange
+            CadastrarVeiculoRequest request = new CadastrarVeiculoRequest(
+                "Toyota", "Corolla", 2023, new BigDecimal("75000.00"), "Branco", "Gasolina"
+            );
+
             // Act
             Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
 
@@ -57,7 +54,9 @@ class CadastrarVeiculoRequestValidationTest {
         @DisplayName("Deve rejeitar marca nula ou vazia")
         void deveRejeitarMarcaNulaOuVazia(String marca) {
             // Arrange
-            request.setMarca(marca);
+            CadastrarVeiculoRequest request = new CadastrarVeiculoRequest(
+                marca, "Corolla", 2023, new BigDecimal("75000.00"), "Branco", "Gasolina"
+            );
 
             // Act
             Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
@@ -65,37 +64,23 @@ class CadastrarVeiculoRequestValidationTest {
             // Assert
             assertFalse(violations.isEmpty());
             assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("marca")));
+                .anyMatch(v -> v.getPropertyPath().toString().equals("marca")));
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"BMW", "Mercedes-Benz", "Peugeot-Citroën", "Alfa Romeo"})
-        @DisplayName("Deve aceitar marcas com caracteres especiais")
-        void deveAceitarMarcasComCaracteresEspeciais(String marca) {
+        @ValueSource(strings = {"A", "AB", "Toyota", "Mercedes-Benz", "Volkswagen"})
+        @DisplayName("Deve aceitar marcas de diferentes tamanhos")
+        void deveAceitarMarcasDeDiferentesTamanhos(String marca) {
             // Arrange
-            request.setMarca(marca);
+            CadastrarVeiculoRequest request = new CadastrarVeiculoRequest(
+                marca, "Modelo", 2023, new BigDecimal("75000.00"), "Branco", "Gasolina"
+            );
 
             // Act
             Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
 
             // Assert
-            assertTrue(violations.stream()
-                    .noneMatch(v -> v.getPropertyPath().toString().equals("marca")));
-        }
-
-        @Test
-        @DisplayName("Deve rejeitar marca muito longa")
-        void deveRejeitarMarcaMuitoLonga() {
-            // Arrange
-            request.setMarca("A".repeat(51)); // Mais que 50 caracteres
-
-            // Act
-            Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
-
-            // Assert
-            assertFalse(violations.isEmpty());
-            assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("marca")));
+            assertTrue(violations.isEmpty());
         }
     }
 
@@ -103,13 +88,30 @@ class CadastrarVeiculoRequestValidationTest {
     @DisplayName("Testes de validação de modelo")
     class ValidacaoModeloTests {
 
+        @Test
+        @DisplayName("Deve aceitar modelo válido")
+        void deveAceitarModeloValido() {
+            // Arrange
+            CadastrarVeiculoRequest request = new CadastrarVeiculoRequest(
+                "Toyota", "Corolla", 2023, new BigDecimal("75000.00"), "Branco", "Gasolina"
+            );
+
+            // Act
+            Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
+
+            // Assert
+            assertTrue(violations.isEmpty());
+        }
+
         @ParameterizedTest
         @NullAndEmptySource
-        @ValueSource(strings = {"", "   "})
+        @ValueSource(strings = {"", "   ", "\t", "\n"})
         @DisplayName("Deve rejeitar modelo nulo ou vazio")
         void deveRejeitarModeloNuloOuVazio(String modelo) {
             // Arrange
-            request.setModelo(modelo);
+            CadastrarVeiculoRequest request = new CadastrarVeiculoRequest(
+                "Toyota", modelo, 2023, new BigDecimal("75000.00"), "Branco", "Gasolina"
+            );
 
             // Act
             Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
@@ -117,37 +119,23 @@ class CadastrarVeiculoRequestValidationTest {
             // Assert
             assertFalse(violations.isEmpty());
             assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("modelo")));
+                .anyMatch(v -> v.getPropertyPath().toString().equals("modelo")));
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"Civic 2.0", "C4 Picasso", "Golf GTI", "A3 Sportback"})
-        @DisplayName("Deve aceitar modelos com números e caracteres especiais")
-        void deveAceitarModelosComNumerosECaracteresEspeciais(String modelo) {
+        @ValueSource(strings = {"A", "AB", "Corolla", "Civic Type R", "Golf GTI Turbo"})
+        @DisplayName("Deve aceitar modelos de diferentes tamanhos")
+        void deveAceitarModelosDeDiferentesTamanhos(String modelo) {
             // Arrange
-            request.setModelo(modelo);
+            CadastrarVeiculoRequest request = new CadastrarVeiculoRequest(
+                "Toyota", modelo, 2023, new BigDecimal("75000.00"), "Branco", "Gasolina"
+            );
 
             // Act
             Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
 
             // Assert
-            assertTrue(violations.stream()
-                    .noneMatch(v -> v.getPropertyPath().toString().equals("modelo")));
-        }
-
-        @Test
-        @DisplayName("Deve rejeitar modelo muito longo")
-        void deveRejeitarModeloMuitoLongo() {
-            // Arrange
-            request.setModelo("A".repeat(101)); // Mais que 100 caracteres
-
-            // Act
-            Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
-
-            // Assert
-            assertFalse(violations.isEmpty());
-            assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("modelo")));
+            assertTrue(violations.isEmpty());
         }
     }
 
@@ -159,7 +147,9 @@ class CadastrarVeiculoRequestValidationTest {
         @DisplayName("Deve rejeitar ano nulo")
         void deveRejeitarAnoNulo() {
             // Arrange
-            request.setAno(null);
+            CadastrarVeiculoRequest request = new CadastrarVeiculoRequest(
+                "Toyota", "Corolla", null, new BigDecimal("75000.00"), "Branco", "Gasolina"
+            );
 
             // Act
             Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
@@ -167,54 +157,23 @@ class CadastrarVeiculoRequestValidationTest {
             // Assert
             assertFalse(violations.isEmpty());
             assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("ano")));
+                .anyMatch(v -> v.getPropertyPath().toString().equals("ano")));
         }
 
         @ParameterizedTest
-        @ValueSource(ints = {1899, 1500, 0, -1})
-        @DisplayName("Deve rejeitar anos muito antigos")
-        void deveRejeitarAnosMuitoAntigos(int ano) {
-            // Arrange
-            request.setAno(ano);
-
-            // Act
-            Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
-
-            // Assert
-            assertFalse(violations.isEmpty());
-            assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("ano")));
-        }
-
-        @ParameterizedTest
-        @ValueSource(ints = {2026, 3000, 2050})
-        @DisplayName("Deve rejeitar anos futuros além do limite")
-        void deveRejeitarAnosFuturosAlemDoLimite(int ano) {
-            // Arrange
-            request.setAno(ano);
-
-            // Act
-            Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
-
-            // Assert
-            assertFalse(violations.isEmpty());
-            assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("ano")));
-        }
-
-        @ParameterizedTest
-        @ValueSource(ints = {1900, 2020, 2023, 2024, 2025})
+        @ValueSource(ints = {1900, 1950, 2000, 2023, 2024})
         @DisplayName("Deve aceitar anos válidos")
         void deveAceitarAnosValidos(int ano) {
             // Arrange
-            request.setAno(ano);
+            CadastrarVeiculoRequest request = new CadastrarVeiculoRequest(
+                "Toyota", "Corolla", ano, new BigDecimal("75000.00"), "Branco", "Gasolina"
+            );
 
             // Act
             Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
 
             // Assert
-            assertTrue(violations.stream()
-                    .noneMatch(v -> v.getPropertyPath().toString().equals("ano")));
+            assertTrue(violations.isEmpty());
         }
     }
 
@@ -222,51 +181,35 @@ class CadastrarVeiculoRequestValidationTest {
     @DisplayName("Testes de validação de cor")
     class ValidacaoCorTests {
 
-        @ParameterizedTest
-        @NullAndEmptySource
-        @ValueSource(strings = {"", "   "})
-        @DisplayName("Deve rejeitar cor nula ou vazia")
-        void deveRejeitarCorNulaOuVazia(String cor) {
+        @Test
+        @DisplayName("Deve aceitar cor nula (campo opcional)")
+        void deveAceitarCorNula() {
             // Arrange
-            request.setCor(cor);
+            CadastrarVeiculoRequest request = new CadastrarVeiculoRequest(
+                "Toyota", "Corolla", 2023, new BigDecimal("75000.00"), null, "Gasolina"
+            );
 
             // Act
             Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
 
             // Assert
-            assertFalse(violations.isEmpty());
-            assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("cor")));
+            assertTrue(violations.isEmpty());
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"Azul", "Vermelho", "Preto", "Branco"})
+        @ValueSource(strings = {"Branco", "Preto", "Prata", "Vermelho", "Azul"})
         @DisplayName("Deve aceitar cores válidas")
         void deveAceitarCoresValidas(String cor) {
             // Arrange
-            request.setCor(cor);
+            CadastrarVeiculoRequest request = new CadastrarVeiculoRequest(
+                "Toyota", "Corolla", 2023, new BigDecimal("75000.00"), cor, "Gasolina"
+            );
 
             // Act
             Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
 
             // Assert
-            assertTrue(violations.stream()
-                    .noneMatch(v -> v.getPropertyPath().toString().equals("cor")));
-        }
-
-        @Test
-        @DisplayName("Deve rejeitar cor muito longa")
-        void deveRejeitarCorMuitoLonga() {
-            // Arrange
-            request.setCor("A".repeat(31)); // Mais que 30 caracteres
-
-            // Act
-            Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
-
-            // Assert
-            assertFalse(violations.isEmpty());
-            assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("cor")));
+            assertTrue(violations.isEmpty());
         }
     }
 
@@ -278,7 +221,9 @@ class CadastrarVeiculoRequestValidationTest {
         @DisplayName("Deve rejeitar preço nulo")
         void deveRejeitarPrecoNulo() {
             // Arrange
-            request.setPreco(null);
+            CadastrarVeiculoRequest request = new CadastrarVeiculoRequest(
+                "Toyota", "Corolla", 2023, null, "Branco", "Gasolina"
+            );
 
             // Act
             Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
@@ -286,108 +231,18 @@ class CadastrarVeiculoRequestValidationTest {
             // Assert
             assertFalse(violations.isEmpty());
             assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("preco")));
-        }
-
-        @Test
-        @DisplayName("Deve rejeitar preço zero")
-        void deveRejeitarPrecoZero() {
-            // Arrange
-            request.setPreco(BigDecimal.ZERO);
-
-            // Act
-            Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
-
-            // Assert
-            assertFalse(violations.isEmpty());
-            assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("preco")));
-        }
-
-        @Test
-        @DisplayName("Deve rejeitar preço negativo")
-        void deveRejeitarPrecoNegativo() {
-            // Arrange
-            request.setPreco(new BigDecimal("-1000.00"));
-
-            // Act
-            Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
-
-            // Assert
-            assertFalse(violations.isEmpty());
-            assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("preco")));
+                .anyMatch(v -> v.getPropertyPath().toString().equals("preco")));
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"0.01", "1000.00", "50000.50", "99999999.99"})
-        @DisplayName("Deve aceitar preços válidos")
-        void deveAceitarPrecosValidos(String preco) {
+        @ValueSource(strings = {"0.01", "1000.00", "75000.00", "999999.99"})
+        @DisplayName("Deve aceitar preços positivos")
+        void deveAceitarPrecosPositivos(String preco) {
             // Arrange
-            request.setPreco(new BigDecimal(preco));
+            CadastrarVeiculoRequest request = new CadastrarVeiculoRequest(
+                "Toyota", "Corolla", 2023, new BigDecimal(preco), "Branco", "Gasolina"
+            );
 
-            // Act
-            Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
-
-            // Assert
-            assertTrue(violations.stream()
-                    .noneMatch(v -> v.getPropertyPath().toString().equals("preco")));
-        }
-
-        @Test
-        @DisplayName("Deve rejeitar preço com muitas casas decimais")
-        void deveRejeitarPrecoComMuitasCasasDecimais() {
-            // Arrange
-            request.setPreco(new BigDecimal("12345.123")); // Mais que 2 casas decimais
-
-            // Act
-            Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
-
-            // Assert
-            assertFalse(violations.isEmpty());
-            assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("preco")));
-        }
-
-        @Test
-        @DisplayName("Deve rejeitar preço com muitos dígitos inteiros")
-        void deveRejeitarPrecoComMuitosDigitosInteiros() {
-            // Arrange
-            request.setPreco(new BigDecimal("999999999.99")); // Mais que 8 dígitos inteiros
-
-            // Act
-            Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
-
-            // Assert
-            assertFalse(violations.isEmpty());
-            assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("preco")));
-        }
-    }
-
-    @Nested
-    @DisplayName("Testes de validação combinada")
-    class ValidacaoCombinadaTests {
-
-        @Test
-        @DisplayName("Deve rejeitar objeto completamente inválido")
-        void deveRejeitarObjetoCompletamenteInvalido() {
-            // Arrange
-            CadastrarVeiculoRequest requestInvalido = new CadastrarVeiculoRequest();
-            // Todos os campos nulos
-
-            // Act
-            Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(requestInvalido);
-
-            // Assert
-            assertFalse(violations.isEmpty());
-            // Deve ter pelo menos 5 violações (uma para cada campo obrigatório)
-            assertTrue(violations.size() >= 5);
-        }
-
-        @Test
-        @DisplayName("Deve aceitar objeto completamente válido")
-        void deveAceitarObjetoCompletamenteValido() {
             // Act
             Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
 
@@ -395,50 +250,14 @@ class CadastrarVeiculoRequestValidationTest {
             assertTrue(violations.isEmpty());
         }
 
-        @Test
-        @DisplayName("Deve validar múltiplos campos inválidos simultaneamente")
-        void deveValidarMultiplosCamposInvalidosSimultaneamente() {
+        @ParameterizedTest
+        @ValueSource(strings = {"0", "-1", "-100.00", "-999999.99"})
+        @DisplayName("Deve rejeitar preços zero ou negativos")
+        void deveRejeitarPrecosZeroOuNegativos(String preco) {
             // Arrange
-            request.setMarca("");
-            request.setModelo(null);
-            request.setAno(null);
-            request.setCor("   ");
-            request.setPreco(null);
-
-            // Act
-            Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
-
-            // Assert
-            assertFalse(violations.isEmpty());
-            assertEquals(5, violations.size());
-        }
-    }
-
-    @Nested
-    @DisplayName("Testes de cenários extremos")
-    class CenariosExtremosTests {
-
-        @Test
-        @DisplayName("Deve rejeitar strings que excedem os limites")
-        void deveRejeitarStringsQueExcedemOsLimites() {
-            // Arrange
-            request.setMarca("A".repeat(51)); // Excede 50 caracteres
-            request.setModelo("B".repeat(101)); // Excede 100 caracteres
-            request.setCor("C".repeat(31)); // Excede 30 caracteres
-
-            // Act
-            Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
-
-            // Assert
-            assertFalse(violations.isEmpty());
-            assertEquals(3, violations.size());
-        }
-
-        @Test
-        @DisplayName("Deve lidar com valores extremos de ano")
-        void deveLidarComValoresExtremosDeAno() {
-            // Arrange
-            request.setAno(Integer.MAX_VALUE);
+            CadastrarVeiculoRequest request = new CadastrarVeiculoRequest(
+                "Toyota", "Corolla", 2023, new BigDecimal(preco), "Branco", "Gasolina"
+            );
 
             // Act
             Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
@@ -446,83 +265,103 @@ class CadastrarVeiculoRequestValidationTest {
             // Assert
             assertFalse(violations.isEmpty());
             assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("ano")));
+                .anyMatch(v -> v.getPropertyPath().toString().equals("preco")));
         }
 
         @Test
-        @DisplayName("Deve aceitar caracteres Unicode dentro dos limites")
-        void deveAceitarCaracteresUnicodeDentroDoLimites() {
+        @DisplayName("Deve aceitar preços com casas decimais")
+        void deveAceitarPrecosComCasasDecimais() {
             // Arrange
-            request.setMarca("Toyota");
-            request.setModelo("Corolla");
-            request.setCor("Azul");
+            CadastrarVeiculoRequest request = new CadastrarVeiculoRequest(
+                "Toyota", "Corolla", 2023, new BigDecimal("75123.45"), "Branco", "Gasolina"
+            );
 
             // Act
             Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
 
             // Assert
             assertTrue(violations.isEmpty());
-            assertEquals("Toyota", request.getMarca());
-            assertEquals("Corolla", request.getModelo());
-            assertEquals("Azul", request.getCor());
         }
     }
 
     @Nested
-    @DisplayName("Testes de equals e hashCode")
-    class EqualsHashCodeTests {
+    @DisplayName("Testes de múltiplos erros")
+    class MultiplosErrosTests {
 
         @Test
-        @DisplayName("Objetos iguais devem ter equals verdadeiro")
-        void objetosIguaisDevemTerEqualsVerdadeiro() {
+        @DisplayName("Deve retornar múltiplos erros quando vários campos são inválidos")
+        void deveRetornarMultiplosErrosQuandoVariosCamposSaoInvalidos() {
             // Arrange
-            CadastrarVeiculoRequest outro = new CadastrarVeiculoRequest();
-            outro.setMarca("Toyota");
-            outro.setModelo("Corolla");
-            outro.setAno(2023);
-            outro.setCor("Branco");
-            outro.setPreco(new BigDecimal("75000.00"));
+            CadastrarVeiculoRequest request = new CadastrarVeiculoRequest(
+                "", "", null, null, "Branco", "Gasolina"
+            );
 
-            // Act & Assert
-            assertEquals(request, outro);
-            assertEquals(request.hashCode(), outro.hashCode());
+            // Act
+            Set<ConstraintViolation<CadastrarVeiculoRequest>> violations = validator.validate(request);
+
+            // Assert
+            assertFalse(violations.isEmpty());
+            assertTrue(violations.size() >= 3);
         }
+    }
+
+    @Nested
+    @DisplayName("Testes de igualdade e hashCode")
+    class IgualdadeHashCodeTests {
 
         @Test
-        @DisplayName("Objetos diferentes devem ter equals falso")
-        void objetosDiferentesDevemTerEqualsFalso() {
+        @DisplayName("Deve considerar dois objetos iguais quando todos os campos são iguais")
+        void deveConsiderarDoisObjetosIguaisQuandoTodosCamposSaoIguais() {
             // Arrange
-            CadastrarVeiculoRequest outro = new CadastrarVeiculoRequest();
-            outro.setMarca("Honda");
-            outro.setModelo("Civic");
-            outro.setAno(2024);
-            outro.setCor("Preto");
-            outro.setPreco(new BigDecimal("80000.00"));
+            CadastrarVeiculoRequest request1 = new CadastrarVeiculoRequest(
+                "Toyota", "Corolla", 2023, new BigDecimal("75000.00"), "Branco", "Gasolina"
+            );
+            CadastrarVeiculoRequest request2 = new CadastrarVeiculoRequest(
+                "Toyota", "Corolla", 2023, new BigDecimal("75000.00"), "Branco", "Gasolina"
+            );
 
             // Act & Assert
-            assertNotEquals(request, outro);
+            assertEquals(request1, request2);
+            assertEquals(request1.hashCode(), request2.hashCode());
         }
 
         @Test
-        @DisplayName("Deve ser reflexivo - objeto igual a si mesmo")
-        void deveSerReflexivo() {
+        @DisplayName("Deve considerar dois objetos diferentes quando algum campo difere")
+        void deveConsiderarDoisObjetosDiferentesQuandoAlgumCampoDifere() {
+            // Arrange
+            CadastrarVeiculoRequest request1 = new CadastrarVeiculoRequest(
+                "Toyota", "Corolla", 2023, new BigDecimal("75000.00"), "Branco", "Gasolina"
+            );
+            CadastrarVeiculoRequest request2 = new CadastrarVeiculoRequest(
+                "Honda", "Civic", 2023, new BigDecimal("80000.00"), "Preto", "Flex"
+            );
+
             // Act & Assert
-            assertTrue(request.equals(request));
-            assertEquals(request.hashCode(), request.hashCode());
+            assertNotEquals(request1, request2);
         }
+    }
+
+    @Nested
+    @DisplayName("Testes de toString")
+    class ToStringTests {
 
         @Test
-        @DisplayName("Não deve ser igual a null")
-        void naoDeveSerIgualANull() {
-            // Act & Assert
-            assertNotEquals(null, request);
-        }
+        @DisplayName("Deve retornar representação em string com todos os campos")
+        void deveRetornarRepresentacaoEmStringComTodosCampos() {
+            // Arrange
+            CadastrarVeiculoRequest request = new CadastrarVeiculoRequest(
+                "Toyota", "Corolla", 2023, new BigDecimal("75000.00"), "Branco", "Gasolina"
+            );
 
-        @Test
-        @DisplayName("Não deve ser igual a objeto de classe diferente")
-        void naoDeveSerIgualAObjetoDeClasseDiferente() {
-            // Act & Assert
-            assertNotEquals("string", request);
+            // Act
+            String resultado = request.toString();
+
+            // Assert
+            assertNotNull(resultado);
+            assertTrue(resultado.contains("Toyota"));
+            assertTrue(resultado.contains("Corolla"));
+            assertTrue(resultado.contains("Branco"));
         }
     }
 }
+

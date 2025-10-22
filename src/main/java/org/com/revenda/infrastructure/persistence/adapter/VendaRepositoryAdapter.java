@@ -1,60 +1,96 @@
 package org.com.revenda.infrastructure.persistence.adapter;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.com.revenda.domain.entity.Venda;
 import org.com.revenda.domain.repository.VendaRepository;
-import org.com.revenda.domain.dto.VendaComVeiculo;
 import org.com.revenda.infrastructure.persistence.mapper.VendaMapper;
-import org.com.revenda.infrastructure.persistence.mapper.VeiculoMapper;
 import org.com.revenda.infrastructure.persistence.repository.VendaJpaRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
+@Log4j2
 public class VendaRepositoryAdapter implements VendaRepository {
 
     private final VendaJpaRepository jpaRepository;
-    private final VendaMapper vendaMapper;
-    private final VeiculoMapper veiculoMapper;
+    private final VendaMapper mapper;
 
     @Override
     public Venda save(Venda venda) {
-        var entity = vendaMapper.toJpaEntity(venda);
-        var savedEntity = jpaRepository.save(entity);
-        return vendaMapper.toDomainEntity(savedEntity);
-    }
+        log.info("Salvando venda para veículo ID: {} - Cliente: {}",
+                venda.getVeiculoId(), venda.getCpfCliente());
 
-    @Override
-    public Optional<Venda> findById(Long id) {
-        return jpaRepository.findById(id)
-            .map(vendaMapper::toDomainEntity);
+        var entity = mapper.toJpaEntity(venda);
+        var savedEntity = jpaRepository.save(entity);
+        var result = mapper.toDomainEntity(savedEntity);
+
+        log.info("Venda salva com sucesso. ID: {} - Código pagamento: {}",
+                result.getId(), result.getCodigoPagamento());
+        return result;
     }
 
     @Override
     public Optional<Venda> findByCodigoPagamento(String codigoPagamento) {
-        return jpaRepository.findByCodigoPagamento(codigoPagamento)
-            .map(vendaMapper::toDomainEntity);
+        log.debug("Buscando venda por código de pagamento: {}", codigoPagamento);
+
+        var result = jpaRepository.findByCodigoPagamento(codigoPagamento)
+            .map(mapper::toDomainEntity);
+
+        if (result.isPresent()) {
+            log.debug("Venda encontrada para código: {}", codigoPagamento);
+        } else {
+            log.debug("Venda não encontrada para código: {}", codigoPagamento);
+        }
+
+        return result;
+    }
+
+    @Override
+    public Optional<Venda> findById(Long id) {
+        log.debug("Buscando venda por ID: {}", id);
+
+        var result = jpaRepository.findById(id)
+            .map(mapper::toDomainEntity);
+
+        if (result.isPresent()) {
+            log.debug("Venda encontrada: ID {}", id);
+        } else {
+            log.debug("Venda não encontrada para ID: {}", id);
+        }
+
+        return result;
     }
 
     @Override
     public List<Venda> findAll() {
-        return jpaRepository.findAll()
+        log.debug("Buscando todas as vendas");
+
+        var result = jpaRepository.findAll()
             .stream()
-            .map(vendaMapper::toDomainEntity)
-            .toList();
+            .map(mapper::toDomainEntity)
+            .collect(Collectors.toList());
+
+        log.info("Encontradas {} vendas no total", result.size());
+        return result;
     }
 
     @Override
-    public List<VendaComVeiculo> findVendasComVeiculosOrderByPreco() {
-        return jpaRepository.findVendasComVeiculosOrderByPreco()
+    public List<Venda> findAllOrderByValorVendaDesc() {
+        log.debug("Buscando todas as vendas ordenadas por valor");
+
+        var result = jpaRepository.findAll()
             .stream()
-            .map(vendaJpaEntity -> new VendaComVeiculo(
-                vendaMapper.toDomainEntity(vendaJpaEntity),
-                veiculoMapper.toDomainEntity(vendaJpaEntity.getVeiculo())
-            ))
-            .toList();
+            .map(mapper::toDomainEntity)
+            .sorted(Comparator.comparing(Venda::getValorVenda).reversed())
+            .collect(Collectors.toList());
+
+        log.info("Encontradas {} vendas ordenadas por valor", result.size());
+        return result;
     }
 }

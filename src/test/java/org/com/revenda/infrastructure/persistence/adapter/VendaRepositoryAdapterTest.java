@@ -1,11 +1,7 @@
 package org.com.revenda.infrastructure.persistence.adapter;
 
-import org.com.revenda.domain.dto.VendaComVeiculo;
-import org.com.revenda.domain.entity.Veiculo;
 import org.com.revenda.domain.entity.Venda;
-import org.com.revenda.infrastructure.persistence.entity.VeiculoJpaEntity;
 import org.com.revenda.infrastructure.persistence.entity.VendaJpaEntity;
-import org.com.revenda.infrastructure.persistence.mapper.VeiculoMapper;
 import org.com.revenda.infrastructure.persistence.mapper.VendaMapper;
 import org.com.revenda.infrastructure.persistence.repository.VendaJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -34,38 +31,27 @@ class VendaRepositoryAdapterTest {
     @Mock
     private VendaMapper vendaMapper;
 
-    @Mock
-    private VeiculoMapper veiculoMapper;
-
     @InjectMocks
     private VendaRepositoryAdapter vendaRepositoryAdapter;
 
     private Venda venda;
     private VendaJpaEntity vendaEntity;
-    private Veiculo veiculo;
-    private VeiculoJpaEntity veiculoEntity;
 
     @BeforeEach
     void setUp() {
         venda = new Venda();
         venda.setId(1L);
         venda.setVeiculoId(1L);
-        venda.setCpfComprador("123.456.789-00");
+        venda.setCpfCliente("123.456.789-00");
+        venda.setNomeCliente("João Silva");
+        venda.setValorVenda(new BigDecimal("75000.00"));
 
         vendaEntity = new VendaJpaEntity();
         vendaEntity.setId(1L);
         vendaEntity.setVeiculoId(1L);
-        vendaEntity.setCpfComprador("123.456.789-00");
-
-        veiculo = new Veiculo();
-        veiculo.setId(1L);
-        veiculo.setMarca("Toyota");
-
-        veiculoEntity = new VeiculoJpaEntity();
-        veiculoEntity.setId(1L);
-        veiculoEntity.setMarca("Toyota");
-
-        vendaEntity.setVeiculo(veiculoEntity);
+        vendaEntity.setCpfCliente("123.456.789-00");
+        vendaEntity.setNomeCliente("João Silva");
+        vendaEntity.setValorVenda(new BigDecimal("75000.00"));
     }
 
     @Test
@@ -139,25 +125,4 @@ class VendaRepositoryAdapterTest {
         verify(jpaRepository, times(1)).findAll();
         verify(vendaMapper, times(1)).toDomainEntity(vendaEntity);
     }
-
-    @Test
-    @DisplayName("Deve buscar vendas com veículos ordenadas por preço")
-    void deveBuscarVendasComVeiculosOrderByPreco() {
-        // Arrange
-        List<VendaJpaEntity> entities = Arrays.asList(vendaEntity);
-        when(jpaRepository.findVendasComVeiculosOrderByPreco()).thenReturn(entities);
-        when(vendaMapper.toDomainEntity(vendaEntity)).thenReturn(venda);
-        when(veiculoMapper.toDomainEntity(veiculoEntity)).thenReturn(veiculo);
-
-        // Act
-        List<VendaComVeiculo> resultado = vendaRepositoryAdapter.findVendasComVeiculosOrderByPreco();
-
-        // Assert
-        assertNotNull(resultado);
-        assertEquals(1, resultado.size());
-        verify(jpaRepository, times(1)).findVendasComVeiculosOrderByPreco();
-        verify(vendaMapper, times(1)).toDomainEntity(vendaEntity);
-        verify(veiculoMapper, times(1)).toDomainEntity(veiculoEntity);
-    }
 }
-

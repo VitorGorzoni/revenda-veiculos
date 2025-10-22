@@ -31,7 +31,6 @@ class VeiculoDtoMapperExtendedTest {
 
     private Veiculo veiculo;
     private VeiculoResponse veiculoResponse;
-    private CadastrarVeiculoRequest cadastrarRequest;
     private LocalDateTime dataAtual;
 
     @BeforeEach
@@ -47,13 +46,6 @@ class VeiculoDtoMapperExtendedTest {
         veiculo.setPreco(new BigDecimal("75000.00"));
         veiculo.setStatus(StatusVeiculo.DISPONIVEL);
         veiculo.setDataCadastro(dataAtual);
-
-        cadastrarRequest = new CadastrarVeiculoRequest();
-        cadastrarRequest.setMarca("Honda");
-        cadastrarRequest.setModelo("Civic");
-        cadastrarRequest.setAno(2024);
-        cadastrarRequest.setCor("Preto");
-        cadastrarRequest.setPreco(new BigDecimal("85000.00"));
 
         // Setup do mock para retornar valores esperados
         veiculoResponse = new VeiculoResponse();
@@ -75,6 +67,10 @@ class VeiculoDtoMapperExtendedTest {
         @DisplayName("Deve converter request válido para domain")
         void deveConverterRequestValidoParaDomain() {
             // Arrange
+            CadastrarVeiculoRequest cadastrarRequest = new CadastrarVeiculoRequest(
+                "Honda", "Civic", 2024, new BigDecimal("85000.00"), "Preto", "Flex"
+            );
+            
             Veiculo veiculoEsperado = new Veiculo();
             veiculoEsperado.setMarca("Honda");
             veiculoEsperado.setModelo("Civic");
@@ -100,47 +96,63 @@ class VeiculoDtoMapperExtendedTest {
         @DisplayName("Deve converter campos com valores extremos")
         void deveConverterCamposComValoresExtremos() {
             // Arrange
-            CadastrarVeiculoRequest requestExtremo = new CadastrarVeiculoRequest();
-            requestExtremo.setAno(1900);
-            requestExtremo.setPreco(new BigDecimal("999999999.99"));
+            CadastrarVeiculoRequest requestExtremo = new CadastrarVeiculoRequest(
+                "A", "B", 1900, new BigDecimal("0.01"), "C", "D"
+            );
+            
+            Veiculo veiculoExtremo = new Veiculo();
+            veiculoExtremo.setMarca("A");
+            veiculoExtremo.setModelo("B");
+            veiculoExtremo.setAno(1900);
+            veiculoExtremo.setCor("C");
+            veiculoExtremo.setPreco(new BigDecimal("0.01"));
 
-            Veiculo veiculoEsperado = new Veiculo();
-            veiculoEsperado.setAno(1900);
-            veiculoEsperado.setPreco(new BigDecimal("999999999.99"));
-
-            when(mapper.toDomain(requestExtremo)).thenReturn(veiculoEsperado);
+            when(mapper.toDomain(requestExtremo)).thenReturn(veiculoExtremo);
 
             // Act
             Veiculo resultado = mapper.toDomain(requestExtremo);
 
             // Assert
-            assertEquals(1900, resultado.getAno());
-            assertEquals(new BigDecimal("999999999.99"), resultado.getPreco());
+            assertNotNull(resultado);
+            assertEquals("A", resultado.getMarca());
+            assertEquals("B", resultado.getModelo());
         }
 
         @Test
-        @DisplayName("Deve converter strings com caracteres especiais")
-        void deveConverterStringsComCaracteresEspeciais() {
+        @DisplayName("Deve converter request com caracteres especiais")
+        void deveConverterRequestComCaracteresEspeciais() {
             // Arrange
-            CadastrarVeiculoRequest requestEspecial = new CadastrarVeiculoRequest();
-            requestEspecial.setMarca("Peugeot-Citroën");
-            requestEspecial.setModelo("C4 Picasso 2.0 HDi");
-            requestEspecial.setCor("Azul Metálico");
+            CadastrarVeiculoRequest requestEspecial = new CadastrarVeiculoRequest(
+                "Mercedes-Benz", "Classe A 200", 2023, new BigDecimal("180000.00"), "Azul Metálico", "Gasolina"
+            );
+            
+            Veiculo veiculoEspecial = new Veiculo();
+            veiculoEspecial.setMarca("Mercedes-Benz");
+            veiculoEspecial.setModelo("Classe A 200");
+            veiculoEspecial.setCor("Azul Metálico");
 
-            Veiculo veiculoEsperado = new Veiculo();
-            veiculoEsperado.setMarca("Peugeot-Citroën");
-            veiculoEsperado.setModelo("C4 Picasso 2.0 HDi");
-            veiculoEsperado.setCor("Azul Metálico");
-
-            when(mapper.toDomain(requestEspecial)).thenReturn(veiculoEsperado);
+            when(mapper.toDomain(requestEspecial)).thenReturn(veiculoEspecial);
 
             // Act
             Veiculo resultado = mapper.toDomain(requestEspecial);
 
             // Assert
-            assertEquals("Peugeot-Citroën", resultado.getMarca());
-            assertEquals("C4 Picasso 2.0 HDi", resultado.getModelo());
-            assertEquals("Azul Metálico", resultado.getCor());
+            assertNotNull(resultado);
+            assertEquals("Mercedes-Benz", resultado.getMarca());
+            assertEquals("Classe A 200", resultado.getModelo());
+        }
+
+        @Test
+        @DisplayName("Deve retornar null quando request é null")
+        void deveRetornarNullQuandoRequestENull() {
+            // Arrange
+            when(mapper.toDomain(null)).thenReturn(null);
+
+            // Act
+            Veiculo resultado = mapper.toDomain(null);
+
+            // Assert
+            assertNull(resultado);
         }
     }
 
@@ -166,40 +178,44 @@ class VeiculoDtoMapperExtendedTest {
             assertEquals("Branco", resultado.getCor());
             assertEquals(new BigDecimal("75000.00"), resultado.getPreco());
             assertEquals(StatusVeiculo.DISPONIVEL, resultado.getStatus());
-            assertEquals(dataAtual, resultado.getDataCadastro());
         }
 
         @Test
-        @DisplayName("Deve converter veículo vendido")
-        void deveConverterVeiculoVendido() {
+        @DisplayName("Deve converter domain sem ID para response")
+        void deveConverterDomainSemIdParaResponse() {
             // Arrange
-            veiculo.setStatus(StatusVeiculo.VENDIDO);
-            veiculoResponse.setStatus(StatusVeiculo.VENDIDO);
+            Veiculo veiculoSemId = new Veiculo();
+            veiculoSemId.setMarca("Ford");
+            veiculoSemId.setModelo("Fiesta");
+            veiculoSemId.setAno(2022);
 
-            when(mapper.toResponse(veiculo)).thenReturn(veiculoResponse);
+            VeiculoResponse responseSemId = new VeiculoResponse();
+            responseSemId.setMarca("Ford");
+            responseSemId.setModelo("Fiesta");
+            responseSemId.setAno(2022);
+
+            when(mapper.toResponse(veiculoSemId)).thenReturn(responseSemId);
 
             // Act
-            VeiculoResponse resultado = mapper.toResponse(veiculo);
+            VeiculoResponse resultado = mapper.toResponse(veiculoSemId);
 
             // Assert
-            assertEquals(StatusVeiculo.VENDIDO, resultado.getStatus());
+            assertNotNull(resultado);
+            assertEquals("Ford", resultado.getMarca());
+            assertEquals("Fiesta", resultado.getModelo());
         }
 
         @Test
-        @DisplayName("Deve manter precisão decimal do preço")
-        void deveManterPrecisaoDecimalDoPreco() {
+        @DisplayName("Deve retornar null quando domain é null")
+        void deveRetornarNullQuandoDomainENull() {
             // Arrange
-            BigDecimal precoEspecifico = new BigDecimal("12345.67");
-            veiculo.setPreco(precoEspecifico);
-            veiculoResponse.setPreco(precoEspecifico);
-
-            when(mapper.toResponse(veiculo)).thenReturn(veiculoResponse);
+            when(mapper.toResponse((Veiculo) null)).thenReturn(null);
 
             // Act
-            VeiculoResponse resultado = mapper.toResponse(veiculo);
+            VeiculoResponse resultado = mapper.toResponse((Veiculo) null);
 
             // Assert
-            assertEquals(precoEspecifico, resultado.getPreco());
+            assertNull(resultado);
         }
     }
 
@@ -211,20 +227,25 @@ class VeiculoDtoMapperExtendedTest {
         @DisplayName("Deve converter lista de veículos para lista de responses")
         void deveConverterListaVeiculosParaListaResponses() {
             // Arrange
+            Veiculo veiculo1 = new Veiculo();
+            veiculo1.setId(1L);
+            veiculo1.setMarca("Toyota");
+
             Veiculo veiculo2 = new Veiculo();
             veiculo2.setId(2L);
             veiculo2.setMarca("Honda");
-            veiculo2.setModelo("Civic");
-            veiculo2.setStatus(StatusVeiculo.VENDIDO);
+
+            List<Veiculo> veiculos = Arrays.asList(veiculo1, veiculo2);
+
+            VeiculoResponse response1 = new VeiculoResponse();
+            response1.setId(1L);
+            response1.setMarca("Toyota");
 
             VeiculoResponse response2 = new VeiculoResponse();
             response2.setId(2L);
             response2.setMarca("Honda");
-            response2.setModelo("Civic");
-            response2.setStatus(StatusVeiculo.VENDIDO);
 
-            List<Veiculo> veiculos = Arrays.asList(veiculo, veiculo2);
-            List<VeiculoResponse> responsesEsperadas = Arrays.asList(veiculoResponse, response2);
+            List<VeiculoResponse> responsesEsperadas = Arrays.asList(response1, response2);
 
             when(mapper.toResponseList(veiculos)).thenReturn(responsesEsperadas);
 
@@ -234,24 +255,33 @@ class VeiculoDtoMapperExtendedTest {
             // Assert
             assertNotNull(resultado);
             assertEquals(2, resultado.size());
-
-            assertEquals(1L, resultado.get(0).getId());
             assertEquals("Toyota", resultado.get(0).getMarca());
-            assertEquals(StatusVeiculo.DISPONIVEL, resultado.get(0).getStatus());
-
-            assertEquals(2L, resultado.get(1).getId());
             assertEquals("Honda", resultado.get(1).getMarca());
-            assertEquals(StatusVeiculo.VENDIDO, resultado.get(1).getStatus());
         }
 
         @Test
         @DisplayName("Deve converter lista vazia")
         void deveConverterListaVazia() {
             // Arrange
-            when(mapper.toResponseList(Collections.emptyList())).thenReturn(Collections.emptyList());
+            List<Veiculo> veiculosVazios = Collections.emptyList();
+            when(mapper.toResponseList(veiculosVazios)).thenReturn(Collections.emptyList());
 
             // Act
-            List<VeiculoResponse> resultado = mapper.toResponseList(Collections.emptyList());
+            List<VeiculoResponse> resultado = mapper.toResponseList(veiculosVazios);
+
+            // Assert
+            assertNotNull(resultado);
+            assertTrue(resultado.isEmpty());
+        }
+
+        @Test
+        @DisplayName("Deve retornar lista vazia quando lista de entrada é null")
+        void deveRetornarListaVaziaQuandoListaEntradaENull() {
+            // Arrange
+            when(mapper.toResponseList(null)).thenReturn(Collections.emptyList());
+
+            // Act
+            List<VeiculoResponse> resultado = mapper.toResponseList(null);
 
             // Assert
             assertNotNull(resultado);
@@ -260,46 +290,110 @@ class VeiculoDtoMapperExtendedTest {
     }
 
     @Nested
-    @DisplayName("Testes de cenários especiais")
-    class CenariosEspeciaisTests {
+    @DisplayName("Testes de preservação de dados")
+    class PreservacaoDadosTests {
 
         @Test
-        @DisplayName("Deve lidar com preços com muitas casas decimais")
-        void deveLidarComPrecosComMuitasCasasDecimais() {
+        @DisplayName("Deve preservar status ao converter para response")
+        void devePreservarStatusAoConverterParaResponse() {
             // Arrange
-            BigDecimal precoComplexo = new BigDecimal("12345.123456789");
-            CadastrarVeiculoRequest requestComplexo = new CadastrarVeiculoRequest();
-            requestComplexo.setPreco(precoComplexo);
-
-            Veiculo veiculoEsperado = new Veiculo();
-            veiculoEsperado.setPreco(precoComplexo);
-
-            when(mapper.toDomain(requestComplexo)).thenReturn(veiculoEsperado);
+            veiculo.setStatus(StatusVeiculo.VENDIDO);
+            veiculoResponse.setStatus(StatusVeiculo.VENDIDO);
+            when(mapper.toResponse(veiculo)).thenReturn(veiculoResponse);
 
             // Act
-            Veiculo resultado = mapper.toDomain(requestComplexo);
+            VeiculoResponse resultado = mapper.toResponse(veiculo);
 
             // Assert
-            assertEquals(precoComplexo, resultado.getPreco());
+            assertEquals(StatusVeiculo.VENDIDO, resultado.getStatus());
         }
 
         @Test
-        @DisplayName("Deve lidar com anos extremos")
-        void deveLidarComAnosExtremos() {
+        @DisplayName("Deve preservar data de cadastro ao converter para response")
+        void devePreservarDataCadastroAoConverterParaResponse() {
             // Arrange
-            CadastrarVeiculoRequest requestExtremo = new CadastrarVeiculoRequest();
-            requestExtremo.setAno(2050);
-
-            Veiculo veiculoEsperado = new Veiculo();
-            veiculoEsperado.setAno(2050);
-
-            when(mapper.toDomain(requestExtremo)).thenReturn(veiculoEsperado);
+            when(mapper.toResponse(veiculo)).thenReturn(veiculoResponse);
 
             // Act
-            Veiculo resultado = mapper.toDomain(requestExtremo);
+            VeiculoResponse resultado = mapper.toResponse(veiculo);
 
             // Assert
-            assertEquals(2050, resultado.getAno());
+            assertEquals(dataAtual, resultado.getDataCadastro());
+        }
+
+        @Test
+        @DisplayName("Deve preservar precisão de valores decimais")
+        void devePreservarPrecisaoValoresDecimais() {
+            // Arrange
+            BigDecimal precoExato = new BigDecimal("75123.45");
+            veiculo.setPreco(precoExato);
+            veiculoResponse.setPreco(precoExato);
+            when(mapper.toResponse(veiculo)).thenReturn(veiculoResponse);
+
+            // Act
+            VeiculoResponse resultado = mapper.toResponse(veiculo);
+
+            // Assert
+            assertEquals(precoExato, resultado.getPreco());
+        }
+    }
+
+    @Nested
+    @DisplayName("Testes de casos extremos")
+    class CasosExtremosTests {
+
+        @Test
+        @DisplayName("Deve lidar com ID muito grande")
+        void deveLidarComIdMuitoGrande() {
+            // Arrange
+            Long idGrande = Long.MAX_VALUE;
+            veiculo.setId(idGrande);
+            veiculoResponse.setId(idGrande);
+            when(mapper.toResponse(veiculo)).thenReturn(veiculoResponse);
+
+            // Act
+            VeiculoResponse resultado = mapper.toResponse(veiculo);
+
+            // Assert
+            assertEquals(idGrande, resultado.getId());
+        }
+
+        @Test
+        @DisplayName("Deve lidar com strings muito longas")
+        void deveLidarComStringsMuitoLongas() {
+            // Arrange
+            String marcaLonga = "A".repeat(100);
+            String modeloLongo = "B".repeat(100);
+            
+            veiculo.setMarca(marcaLonga);
+            veiculo.setModelo(modeloLongo);
+            veiculoResponse.setMarca(marcaLonga);
+            veiculoResponse.setModelo(modeloLongo);
+            
+            when(mapper.toResponse(veiculo)).thenReturn(veiculoResponse);
+
+            // Act
+            VeiculoResponse resultado = mapper.toResponse(veiculo);
+
+            // Assert
+            assertEquals(marcaLonga, resultado.getMarca());
+            assertEquals(modeloLongo, resultado.getModelo());
+        }
+
+        @Test
+        @DisplayName("Deve lidar com ano limite")
+        void deveLidarComAnoLimite() {
+            // Arrange
+            veiculo.setAno(Integer.MAX_VALUE);
+            veiculoResponse.setAno(Integer.MAX_VALUE);
+            when(mapper.toResponse(veiculo)).thenReturn(veiculoResponse);
+
+            // Act
+            VeiculoResponse resultado = mapper.toResponse(veiculo);
+
+            // Assert
+            assertEquals(Integer.MAX_VALUE, resultado.getAno());
         }
     }
 }
+

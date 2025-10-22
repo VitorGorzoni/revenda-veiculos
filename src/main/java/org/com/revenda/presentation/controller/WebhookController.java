@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.com.revenda.domain.entity.StatusPagamento;
-import org.com.revenda.domain.usecase.ProcessarPagamentoUseCase;
+import org.com.revenda.application.usecase.ProcessarPagamentoUseCase;
 import org.com.revenda.presentation.dto.request.WebhookPagamentoRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

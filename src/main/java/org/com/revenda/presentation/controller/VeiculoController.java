@@ -7,9 +7,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.com.revenda.domain.entity.StatusVeiculo;
 import org.com.revenda.domain.entity.Veiculo;
-import org.com.revenda.domain.usecase.*;
+import org.com.revenda.application.service.*;
 import org.com.revenda.presentation.dto.request.CadastrarVeiculoRequest;
 import org.com.revenda.presentation.dto.request.VenderVeiculoRequest;
 import org.com.revenda.presentation.dto.response.VeiculoResponse;
@@ -25,15 +26,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/veiculos")
 @RequiredArgsConstructor
+@Log4j2
 @Tag(name = "Veículos", description = "Operações relacionadas aos veículos")
 public class VeiculoController {
 
-    private final CadastrarVeiculoUseCase cadastrarVeiculoUseCase;
-    private final EditarVeiculoUseCase editarVeiculoUseCase;
-    private final VenderVeiculoUseCase venderVeiculoUseCase;
-    private final ListarVeiculosPorStatusUseCase listarVeiculosPorStatusUseCase;
-    private final ListarTodosVeiculosUseCase listarTodosVeiculosUseCase;
-    private final BuscarVeiculoPorIdUseCase buscarVeiculoPorIdUseCase;
+    private final CadastrarVeiculoApplicationService cadastrarVeiculoApplicationService;
+    private final EditarVeiculoApplicationService editarVeiculoApplicationService;
+    private final VenderVeiculoApplicationService venderVeiculoApplicationService;
+    private final ListarVeiculosPorStatusApplicationService listarVeiculosPorStatusApplicationService;
+    private final ListarTodosVeiculosApplicationService listarTodosVeiculosApplicationService;
+    private final BuscarVeiculoPorIdApplicationService buscarVeiculoPorIdApplicationService;
+    private final ListarVeiculosVendidosApplicationService listarVeiculosVendidosApplicationService;
     private final VeiculoDtoMapper veiculoMapper;
     private final VendaDtoMapper vendaMapper;
 
@@ -48,8 +51,8 @@ public class VeiculoController {
             @RequestParam(value = "status", required = false) String statusParam) {
 
         List<Veiculo> veiculos = (statusParam == null || statusParam.trim().isEmpty())
-                ? listarTodosVeiculosUseCase.execute()
-                : listarVeiculosPorStatusUseCase.execute(parseStatus(statusParam));
+                ? listarTodosVeiculosApplicationService.execute()
+                : listarVeiculosPorStatusApplicationService.execute(parseStatus(statusParam));
 
         return ResponseEntity.ok(veiculoMapper.toResponseList(veiculos));
     }
@@ -71,7 +74,7 @@ public class VeiculoController {
     public ResponseEntity<VeiculoResponse> buscarVeiculoPorId(
             @Parameter(description = "ID do veículo") @PathVariable Long id) {
 
-        Veiculo veiculo = buscarVeiculoPorIdUseCase.execute(id);
+        Veiculo veiculo = buscarVeiculoPorIdApplicationService.execute(id);
         VeiculoResponse response = veiculoMapper.toResponse(veiculo);
         return ResponseEntity.ok(response);
     }
@@ -86,7 +89,7 @@ public class VeiculoController {
             @Valid @RequestBody CadastrarVeiculoRequest request) {
 
         Veiculo veiculo = veiculoMapper.toDomain(request);
-        Veiculo veiculoCadastrado = cadastrarVeiculoUseCase.execute(veiculo);
+        Veiculo veiculoCadastrado = cadastrarVeiculoApplicationService.execute(veiculo);
         VeiculoResponse response = veiculoMapper.toResponse(veiculoCadastrado);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -104,7 +107,7 @@ public class VeiculoController {
             @Valid @RequestBody CadastrarVeiculoRequest request) {
 
         Veiculo veiculo = veiculoMapper.toDomain(request);
-        Veiculo veiculoEditado = editarVeiculoUseCase.execute(id, veiculo);
+        Veiculo veiculoEditado = editarVeiculoApplicationService.execute(id, veiculo);
         VeiculoResponse response = veiculoMapper.toResponse(veiculoEditado);
 
         return ResponseEntity.ok(response);
@@ -121,8 +124,28 @@ public class VeiculoController {
             @Parameter(description = "ID do veículo") @PathVariable Long id,
             @Valid @RequestBody VenderVeiculoRequest request) {
 
-        var venda = venderVeiculoUseCase.execute(id, request.getCpfComprador(), request.getDataVenda());
+        log.info("Iniciando venda do veículo ID: {} para cliente CPF: {}", id, request.cpfCliente());
+
+        var venda = venderVeiculoApplicationService.execute(id, request.cpfCliente(), request.nomeCliente(), request.valorVenda());
         VendaResponse response = vendaMapper.toResponse(venda);
+
+        log.info("Venda realizada com sucesso. Código pagamento: {}", venda.getCodigoPagamento());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/vendidos")
+    @Operation(summary = "Listar veículos vendidos", description = "Lista todos os veículos vendidos com informações da venda")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de veículos vendidos")
+    })
+    public ResponseEntity<List<org.com.revenda.presentation.dto.response.VendaComVeiculoResponse>> listarVeiculosVendidos() {
+        log.info("Listando todos os veículos vendidos");
+
+        var vendas = listarVeiculosVendidosApplicationService.execute();
+        var response = vendaMapper.toVendaComVeiculoResponseList(vendas);
+
+        log.info("Total de veículos vendidos: {}", response.size());
 
         return ResponseEntity.ok(response);
     }

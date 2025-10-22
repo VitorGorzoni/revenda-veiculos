@@ -1,7 +1,7 @@
 package org.com.revenda.presentation.controller;
 
 import org.com.revenda.domain.entity.StatusPagamento;
-import org.com.revenda.domain.usecase.ProcessarPagamentoUseCase;
+import org.com.revenda.application.usecase.ProcessarPagamentoUseCase;
 import org.com.revenda.presentation.dto.request.WebhookPagamentoRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -3,6 +3,7 @@ package org.com.revenda.domain.entity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,30 +15,28 @@ class VendaTest {
     @DisplayName("Deve criar venda com construtor completo")
     void deveCriarVendaComConstrutorCompleto() {
         // Arrange & Act
-        Venda venda = new Venda(1L, "123.456.789-00", "PAG-ABC123");
+        Venda venda = new Venda(1L, "123.456.789-00", "João Silva", new BigDecimal("75000.00"));
 
         // Assert
         assertNotNull(venda);
         assertEquals(1L, venda.getVeiculoId());
-        assertEquals("123.456.789-00", venda.getCpfComprador());
-        assertEquals("PAG-ABC123", venda.getCodigoPagamento());
+        assertEquals("123.456.789-00", venda.getCpfCliente());
+        assertEquals("João Silva", venda.getNomeCliente());
+        assertEquals(0, new BigDecimal("75000.00").compareTo(venda.getValorVenda()));
         assertEquals(StatusPagamento.PENDENTE, venda.getStatusPagamento());
         assertNotNull(venda.getDataVenda());
+        assertNotNull(venda.getCodigoPagamento());
+        assertTrue(venda.getCodigoPagamento().startsWith("PAG-"));
     }
 
     @Test
-    @DisplayName("Deve criar venda com data personalizada")
-    void deveCriarVendaComDataPersonalizada() {
-        // Arrange
-        LocalDateTime dataVenda = LocalDateTime.of(2025, 1, 18, 14, 30);
-
+    @DisplayName("Deve criar venda com construtor vazio")
+    void deveCriarVendaComConstrutorVazio() {
         // Act
-        Venda venda = new Venda(1L, "123.456.789-00", dataVenda, "PAG-ABC123");
+        Venda venda = new Venda();
 
         // Assert
         assertNotNull(venda);
-        assertEquals(dataVenda, venda.getDataVenda());
-        assertEquals(StatusPagamento.PENDENTE, venda.getStatusPagamento());
     }
 
     @Test
@@ -106,7 +105,9 @@ class VendaTest {
         // Act
         venda.setId(1L);
         venda.setVeiculoId(2L);
-        venda.setCpfComprador("987.654.321-00");
+        venda.setCpfCliente("987.654.321-00");
+        venda.setNomeCliente("Maria Silva");
+        venda.setValorVenda(new BigDecimal("85000.00"));
         venda.setDataVenda(dataVenda);
         venda.setCodigoPagamento("PAG-XYZ789");
         venda.setStatusPagamento(StatusPagamento.CONFIRMADO);
@@ -114,10 +115,11 @@ class VendaTest {
         // Assert
         assertEquals(1L, venda.getId());
         assertEquals(2L, venda.getVeiculoId());
-        assertEquals("987.654.321-00", venda.getCpfComprador());
+        assertEquals("987.654.321-00", venda.getCpfCliente());
+        assertEquals("Maria Silva", venda.getNomeCliente());
+        assertEquals(0, new BigDecimal("85000.00").compareTo(venda.getValorVenda()));
         assertEquals(dataVenda, venda.getDataVenda());
         assertEquals("PAG-XYZ789", venda.getCodigoPagamento());
         assertEquals(StatusPagamento.CONFIRMADO, venda.getStatusPagamento());
     }
 }
-

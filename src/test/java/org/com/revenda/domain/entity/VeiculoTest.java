@@ -46,7 +46,7 @@ class VeiculoTest {
         veiculo.setStatus(StatusVeiculo.DISPONIVEL);
 
         // Act
-        veiculo.vender();
+        veiculo.marcarComoVendido();
 
         // Assert
         assertEquals(StatusVeiculo.VENDIDO, veiculo.getStatus());

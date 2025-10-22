@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +29,9 @@ class VendaMapperTest {
         Venda venda = new Venda();
         venda.setId(1L);
         venda.setVeiculoId(2L);
-        venda.setCpfComprador("123.456.789-00");
+        venda.setCpfCliente("123.456.789-00");
+        venda.setNomeCliente("João Silva");
+        venda.setValorVenda(new BigDecimal("75000.00"));
         venda.setDataVenda(LocalDateTime.of(2025, 1, 18, 14, 30));
         venda.setCodigoPagamento("PAG-ABC123");
         venda.setStatusPagamento(StatusPagamento.CONFIRMADO);
@@ -40,7 +43,8 @@ class VendaMapperTest {
         assertNotNull(entity);
         assertEquals(1L, entity.getId());
         assertEquals(2L, entity.getVeiculoId());
-        assertEquals("123.456.789-00", entity.getCpfComprador());
+        assertEquals("123.456.789-00", entity.getCpfCliente());
+        assertEquals("João Silva", entity.getNomeCliente());
         assertEquals("PAG-ABC123", entity.getCodigoPagamento());
         assertEquals(StatusPagamento.CONFIRMADO, entity.getStatusPagamento());
     }
@@ -62,7 +66,9 @@ class VendaMapperTest {
         VendaJpaEntity entity = new VendaJpaEntity();
         entity.setId(1L);
         entity.setVeiculoId(2L);
-        entity.setCpfComprador("987.654.321-00");
+        entity.setCpfCliente("987.654.321-00");
+        entity.setNomeCliente("Maria Silva");
+        entity.setValorVenda(new BigDecimal("85000.00"));
         entity.setDataVenda(LocalDateTime.of(2025, 1, 18, 14, 30));
         entity.setCodigoPagamento("PAG-XYZ789");
         entity.setStatusPagamento(StatusPagamento.PENDENTE);
@@ -74,7 +80,8 @@ class VendaMapperTest {
         assertNotNull(venda);
         assertEquals(1L, venda.getId());
         assertEquals(2L, venda.getVeiculoId());
-        assertEquals("987.654.321-00", venda.getCpfComprador());
+        assertEquals("987.654.321-00", venda.getCpfCliente());
+        assertEquals("Maria Silva", venda.getNomeCliente());
         assertEquals("PAG-XYZ789", venda.getCodigoPagamento());
         assertEquals(StatusPagamento.PENDENTE, venda.getStatusPagamento());
     }
@@ -89,4 +96,3 @@ class VendaMapperTest {
         assertNull(venda);
     }
 }
-
