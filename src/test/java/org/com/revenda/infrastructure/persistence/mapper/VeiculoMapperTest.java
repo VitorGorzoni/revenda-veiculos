@@ -1,4 +1,4 @@
-ackage org.com.revenda.infrastructure.persistence.mapper;
+package org.com.revenda.infrastructure.persistence.mapper;
 
 import org.com.revenda.domain.entity.StatusVeiculo;
 import org.com.revenda.domain.entity.Veiculo;
@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,7 +32,7 @@ class VeiculoMapperTest {
         veiculo.setModelo("Corolla");
         veiculo.setAno(2023);
         veiculo.setCor("Prata");
-        veiculo.setPreco(120000.0);
+        veiculo.setPreco(new BigDecimal("120000.00"));
         veiculo.setStatus(StatusVeiculo.DISPONIVEL);
         veiculo.setDataCadastro(LocalDateTime.now());
 
@@ -45,7 +46,7 @@ class VeiculoMapperTest {
         assertEquals("Corolla", entity.getModelo());
         assertEquals(2023, entity.getAno());
         assertEquals("Prata", entity.getCor());
-        assertEquals(120000.0, entity.getPreco());
+        assertEquals(0, new BigDecimal("120000.00").compareTo(entity.getPreco()));
         assertEquals(StatusVeiculo.DISPONIVEL, entity.getStatus());
     }
 
@@ -69,7 +70,7 @@ class VeiculoMapperTest {
         entity.setModelo("Civic");
         entity.setAno(2022);
         entity.setCor("Preto");
-        entity.setPreco(100000.0);
+        entity.setPreco(new BigDecimal("100000.00"));
         entity.setStatus(StatusVeiculo.VENDIDO);
         entity.setDataCadastro(LocalDateTime.now());
 
@@ -83,7 +84,7 @@ class VeiculoMapperTest {
         assertEquals("Civic", veiculo.getModelo());
         assertEquals(2022, veiculo.getAno());
         assertEquals("Preto", veiculo.getCor());
-        assertEquals(100000.0, veiculo.getPreco());
+        assertEquals(0, new BigDecimal("100000.00").compareTo(veiculo.getPreco()));
         assertEquals(StatusVeiculo.VENDIDO, veiculo.getStatus());
     }
 
@@ -97,4 +98,3 @@ class VeiculoMapperTest {
         assertNull(veiculo);
     }
 }
-

@@ -6,6 +6,9 @@ import org.com.revenda.domain.entity.Veiculo;
 import org.com.revenda.domain.usecase.*;
 import org.com.revenda.presentation.dto.request.CadastrarVeiculoRequest;
 import org.com.revenda.presentation.dto.request.VenderVeiculoRequest;
+import org.com.revenda.presentation.dto.response.VeiculoResponse;
+import org.com.revenda.presentation.mapper.VeiculoDtoMapper;
+import org.com.revenda.presentation.mapper.VendaDtoMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -48,6 +51,21 @@ class VeiculoControllerTest {
     @MockBean
     private ListarVeiculosVendidosUseCase listarVeiculosVendidosUseCase;
 
+    @MockBean
+    private ListarVeiculosPorStatusUseCase listarVeiculosPorStatusUseCase;
+
+    @MockBean
+    private ListarTodosVeiculosUseCase listarTodosVeiculosUseCase;
+
+    @MockBean
+    private BuscarVeiculoPorIdUseCase buscarVeiculoPorIdUseCase;
+
+    @MockBean
+    private VeiculoDtoMapper veiculoDtoMapper;
+
+    @MockBean
+    private VendaDtoMapper vendaDtoMapper;
+
     @Test
     void deveCadastrarVeiculoComSucesso() throws Exception {
         // Given
@@ -57,6 +75,13 @@ class VeiculoControllerTest {
         request.setAno(2023);
         request.setCor("Branco");
         request.setPreco(new BigDecimal("75000.00"));
+
+        Veiculo veiculoInput = new Veiculo();
+        veiculoInput.setMarca("Toyota");
+        veiculoInput.setModelo("Corolla");
+        veiculoInput.setAno(2023);
+        veiculoInput.setCor("Branco");
+        veiculoInput.setPreco(new BigDecimal("75000.00"));
 
         Veiculo veiculoSalvo = new Veiculo();
         veiculoSalvo.setId(1L);
@@ -68,7 +93,20 @@ class VeiculoControllerTest {
         veiculoSalvo.setStatus(StatusVeiculo.DISPONIVEL);
         veiculoSalvo.setDataCadastro(LocalDateTime.now());
 
+        VeiculoResponse veiculoResponse = new VeiculoResponse();
+        veiculoResponse.setId(1L);
+        veiculoResponse.setMarca("Toyota");
+        veiculoResponse.setModelo("Corolla");
+        veiculoResponse.setAno(2023);
+        veiculoResponse.setCor("Branco");
+        veiculoResponse.setPreco(new BigDecimal("75000.00"));
+        veiculoResponse.setStatus(StatusVeiculo.DISPONIVEL);
+        veiculoResponse.setDataCadastro(veiculoSalvo.getDataCadastro());
+
+        // Mock the mappers
+        when(veiculoDtoMapper.toDomain(any(CadastrarVeiculoRequest.class))).thenReturn(veiculoInput);
         when(cadastrarVeiculoUseCase.execute(any(Veiculo.class))).thenReturn(veiculoSalvo);
+        when(veiculoDtoMapper.toResponse(any(Veiculo.class))).thenReturn(veiculoResponse);
 
         // When & Then
         mockMvc.perform(post("/api/veiculos")
@@ -78,9 +116,8 @@ class VeiculoControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.marca").value("Toyota"))
                 .andExpect(jsonPath("$.modelo").value("Corolla"))
-                .andExpected(jsonPath("$.ano").value(2023))
+                .andExpect(jsonPath("$.ano").value(2023))
                 .andExpect(jsonPath("$.cor").value("Branco"))
-                .andExpect(jsonPath("$.preco").value(75000.00))
                 .andExpect(jsonPath("$.status").value("DISPONIVEL"));
     }
 
@@ -89,37 +126,53 @@ class VeiculoControllerTest {
         // Given
         Veiculo veiculo1 = new Veiculo();
         veiculo1.setId(1L);
-        veiculo1.setMarca("Toyota");
-        veiculo1.setModelo("Corolla");
-        veiculo1.setPreco(new BigDecimal("70000.00"));
+        veiculo1.setMarca("Honda");
+        veiculo1.setModelo("Civic");
         veiculo1.setStatus(StatusVeiculo.DISPONIVEL);
 
         Veiculo veiculo2 = new Veiculo();
         veiculo2.setId(2L);
-        veiculo2.setMarca("Honda");
-        veiculo2.setModelo("Civic");
-        veiculo2.setPreco(new BigDecimal("80000.00"));
+        veiculo2.setMarca("Toyota");
+        veiculo2.setModelo("Corolla");
         veiculo2.setStatus(StatusVeiculo.DISPONIVEL);
 
         List<Veiculo> veiculos = Arrays.asList(veiculo1, veiculo2);
 
-        when(listarVeiculosDisponiveis.execute()).thenReturn(veiculos);
+        VeiculoResponse response1 = new VeiculoResponse();
+        response1.setId(1L);
+        response1.setMarca("Honda");
+        response1.setModelo("Civic");
+        response1.setStatus(StatusVeiculo.DISPONIVEL);
+
+        VeiculoResponse response2 = new VeiculoResponse();
+        response2.setId(2L);
+        response2.setMarca("Toyota");
+        response2.setModelo("Corolla");
+        response2.setStatus(StatusVeiculo.DISPONIVEL);
+
+        List<VeiculoResponse> responses = Arrays.asList(response1, response2);
+
+        // Mock the use case and mapper
+        when(listarVeiculosPorStatusUseCase.execute(StatusVeiculo.DISPONIVEL)).thenReturn(veiculos);
+        when(veiculoDtoMapper.toResponseList(veiculos)).thenReturn(responses);
 
         // When & Then
-        mockMvc.perform(get("/api/veiculos/disponiveis"))
+        mockMvc.perform(get("/api/veiculos")
+                .param("status", "DISPONIVEL"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].marca").value("Toyota"))
+                .andExpect(jsonPath("$[0].marca").value("Honda"))
                 .andExpect(jsonPath("$[1].id").value(2))
-                .andExpect(jsonPath("$[1].marca").value("Honda"));
+                .andExpect(jsonPath("$[1].marca").value("Toyota"));
     }
 
     @Test
     void deveRetornarBadRequestQuandoDadosInvalidos() throws Exception {
         // Given
         CadastrarVeiculoRequest request = new CadastrarVeiculoRequest();
-        // Deixando campos obrigatórios em branco
+        // Dados inválidos: sem marca e modelo
 
         // When & Then
         mockMvc.perform(post("/api/veiculos")

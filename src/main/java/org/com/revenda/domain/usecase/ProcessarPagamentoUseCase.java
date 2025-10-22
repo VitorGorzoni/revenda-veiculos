@@ -18,14 +18,14 @@ public class ProcessarPagamentoUseCase {
 
     public void execute(String codigoPagamento, StatusPagamento novoStatus) {
         Venda venda = vendaRepository.findByCodigoPagamento(codigoPagamento)
-            .orElseThrow(() -> new IllegalArgumentException("Venda não encontrada para o código de pagamento: " + codigoPagamento));
+            .orElseThrow(() -> new IllegalArgumentException("Código de pagamento não encontrado: " + codigoPagamento));
 
         if (novoStatus == StatusPagamento.CONFIRMADO) {
             venda.confirmarPagamento();
 
             // Atualizar status do veículo para vendido
             Veiculo veiculo = veiculoRepository.findById(venda.getVeiculoId())
-                .orElseThrow(() -> new VeiculoNaoEncontradoException("Veículo não encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException("Veículo não encontrado com ID: " + venda.getVeiculoId()));
 
             veiculo.vender();
             veiculoRepository.save(veiculo);

@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,7 +38,7 @@ class BuscarVeiculoPorIdUseCaseTest {
         veiculo.setModelo("Civic");
         veiculo.setAno(2022);
         veiculo.setCor("Preto");
-        veiculo.setPreco(100000.0);
+        veiculo.setPreco(new BigDecimal("100000.00"));
     }
 
     @Test

@@ -12,6 +12,9 @@ public class CadastrarVeiculoUseCase {
     private final VeiculoRepository veiculoRepository;
 
     public Veiculo execute(Veiculo veiculo) {
+        if (veiculo == null) {
+            throw new NullPointerException("Veículo não pode ser nulo");
+        }
         return veiculoRepository.save(veiculo);
     }
 }

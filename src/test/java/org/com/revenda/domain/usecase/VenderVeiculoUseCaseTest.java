@@ -114,48 +114,42 @@ class VenderVeiculoUseCaseTest {
     @Test
     @DisplayName("Deve lançar exceção quando CPF for nulo")
     void deveLancarExcecaoQuandoCpfForNulo() {
-        // Arrange
-        when(veiculoRepository.findById(1L)).thenReturn(Optional.of(veiculoDisponivel));
-
-        // Act & Assert
+        // Act & Assert (CPF validation happens before repository call)
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
             () -> venderVeiculoUseCase.execute(1L, null, dataVenda)
         );
 
         assertEquals("CPF é obrigatório", exception.getMessage());
+        verify(veiculoRepository, never()).findById(any());
         verify(vendaRepository, never()).save(any(Venda.class));
     }
 
     @Test
     @DisplayName("Deve lançar exceção quando CPF for vazio")
     void deveLancarExcecaoQuandoCpfForVazio() {
-        // Arrange
-        when(veiculoRepository.findById(1L)).thenReturn(Optional.of(veiculoDisponivel));
-
-        // Act & Assert
+        // Act & Assert (CPF validation happens before repository call)
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
             () -> venderVeiculoUseCase.execute(1L, "   ", dataVenda)
         );
 
         assertEquals("CPF é obrigatório", exception.getMessage());
+        verify(veiculoRepository, never()).findById(any());
         verify(vendaRepository, never()).save(any(Venda.class));
     }
 
     @Test
     @DisplayName("Deve lançar exceção quando CPF for inválido")
     void deveLancarExcecaoQuandoCpfForInvalido() {
-        // Arrange
-        when(veiculoRepository.findById(1L)).thenReturn(Optional.of(veiculoDisponivel));
-
-        // Act & Assert
+        // Act & Assert (CPF validation happens before repository call)
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
             () -> venderVeiculoUseCase.execute(1L, "123", dataVenda)
         );
 
         assertEquals("CPF deve ter 11 dígitos", exception.getMessage());
+        verify(veiculoRepository, never()).findById(any());
         verify(vendaRepository, never()).save(any(Venda.class));
     }
 
@@ -168,6 +162,7 @@ class VenderVeiculoUseCaseTest {
         vendaEsperada.setId(1L);
         vendaEsperada.setVeiculoId(1L);
         vendaEsperada.setCpfComprador(cpfSemFormatacao);
+        vendaEsperada.setDataVenda(dataVenda);
 
         when(veiculoRepository.findById(1L)).thenReturn(Optional.of(veiculoDisponivel));
         when(vendaRepository.save(any(Venda.class))).thenReturn(vendaEsperada);
@@ -178,6 +173,31 @@ class VenderVeiculoUseCaseTest {
         // Assert
         assertNotNull(resultado);
         assertEquals(cpfSemFormatacao, resultado.getCpfComprador());
+        verify(veiculoRepository, times(1)).findById(1L);
+        verify(vendaRepository, times(1)).save(any(Venda.class));
+    }
+
+    @Test
+    @DisplayName("Deve aceitar CPF com formatação")
+    void deveAceitarCpfComFormatacao() {
+        // Arrange
+        String cpfComFormatacao = "123.456.789-00";
+        Venda vendaEsperada = new Venda();
+        vendaEsperada.setId(1L);
+        vendaEsperada.setVeiculoId(1L);
+        vendaEsperada.setCpfComprador(cpfComFormatacao);
+        vendaEsperada.setDataVenda(dataVenda);
+
+        when(veiculoRepository.findById(1L)).thenReturn(Optional.of(veiculoDisponivel));
+        when(vendaRepository.save(any(Venda.class))).thenReturn(vendaEsperada);
+
+        // Act
+        Venda resultado = venderVeiculoUseCase.execute(1L, cpfComFormatacao, dataVenda);
+
+        // Assert
+        assertNotNull(resultado);
+        assertEquals(cpfComFormatacao, resultado.getCpfComprador());
+        verify(veiculoRepository, times(1)).findById(1L);
         verify(vendaRepository, times(1)).save(any(Venda.class));
     }
 }

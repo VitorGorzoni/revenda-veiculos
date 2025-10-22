@@ -225,6 +225,57 @@ scripts\docker-manager.bat help
 - ✅ **Cache otimizado** - Dependências Maven são cacheadas (builds mais rápidos)
 - ✅ **Restart inteligente** - Reinicia apenas se falhar
 
+### 🐳 Opção Alternativa: Docker Compose Tradicional
+
+Se preferir usar os comandos nativos do Docker Compose:
+
+#### **Build e Start**
+```bash
+# Build e iniciar em modo produção
+docker-compose up --build
+
+# Build e iniciar em segundo plano (detached)
+docker-compose up --build -d
+
+# Build e iniciar em modo desenvolvimento
+docker-compose -f docker-compose.dev.yml up --build -d
+```
+
+#### **Outros Comandos Úteis**
+```bash
+# Apenas build (sem iniciar)
+docker-compose build
+
+# Iniciar containers já buildados
+docker-compose up -d
+
+# Parar containers
+docker-compose down
+
+# Parar e remover volumes (limpa banco de dados)
+docker-compose down -v
+
+# Ver logs em tempo real
+docker-compose logs -f
+
+# Ver logs de um serviço específico
+docker-compose logs -f revenda-app
+docker-compose logs -f mysql
+
+# Ver status dos containers
+docker-compose ps
+
+# Rebuild apenas um serviço
+docker-compose build revenda-app
+
+# Reiniciar um serviço específico
+docker-compose restart revenda-app
+```
+
+#### **Diferença entre os arquivos:**
+- **`docker-compose.yml`** - Ambiente de **produção** (otimizado, imagem final)
+- **`docker-compose.dev.yml`** - Ambiente de **desenvolvimento** (hot reload, debug habilitado)
+
 ---
 
 ## ☸️ Opção 2: Executar no Minikube (Kubernetes Local)
@@ -670,7 +721,7 @@ Este projeto está sob a licença MIT.
 ## 📞 Suporte
 
 Para dúvidas ou problemas:
-- 📧 Email: seuemail@example.com
+- 📧 Email: vitorgorzoni.contato@gmail.com
 - 🐛 Issues: [GitHub Issues](https://github.com/usuario/revenda-veiculos/issues)
 - 📖 Documentação: [Wiki do Projeto](https://github.com/usuario/revenda-veiculos/wiki)
 

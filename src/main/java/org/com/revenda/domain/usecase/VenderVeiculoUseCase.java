@@ -19,6 +19,16 @@ public class VenderVeiculoUseCase {
     private final VendaRepository vendaRepository;
 
     public Venda execute(Long veiculoId, String cpfComprador, LocalDateTime dataVenda) {
+        // Validar CPF
+        if (cpfComprador == null || cpfComprador.trim().isEmpty()) {
+            throw new IllegalArgumentException("CPF é obrigatório");
+        }
+
+        String cpfLimpo = cpfComprador.replaceAll("[^0-9]", "");
+        if (cpfLimpo.length() != 11) {
+            throw new IllegalArgumentException("CPF deve ter 11 dígitos");
+        }
+
         Veiculo veiculo = veiculoRepository.findById(veiculoId)
             .orElseThrow(() -> new VeiculoNaoEncontradoException("Veículo não encontrado com ID: " + veiculoId));
 

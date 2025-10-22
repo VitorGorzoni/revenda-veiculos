@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import java.math.BigDecimal;
 
 import java.util.Optional;
 
@@ -39,7 +40,7 @@ class EditarVeiculoUseCaseTest {
         veiculoExistente.setModelo("Corolla");
         veiculoExistente.setAno(2020);
         veiculoExistente.setCor("Prata");
-        veiculoExistente.setPreco(80000.0);
+        veiculoExistente.setPreco(new BigDecimal("100000.00"));
         veiculoExistente.setStatus(StatusVeiculo.DISPONIVEL);
 
         veiculoAtualizado = new Veiculo();
@@ -47,7 +48,7 @@ class EditarVeiculoUseCaseTest {
         veiculoAtualizado.setModelo("Corolla");
         veiculoAtualizado.setAno(2023);
         veiculoAtualizado.setCor("Preto");
-        veiculoAtualizado.setPreco(120000.0);
+        veiculoAtualizado.setPreco(new BigDecimal("120000.00"));
     }
 
     @Test
@@ -64,7 +65,7 @@ class EditarVeiculoUseCaseTest {
         assertNotNull(resultado);
         assertEquals(2023, resultado.getAno());
         assertEquals("Preto", resultado.getCor());
-        assertEquals(120000.0, resultado.getPreco());
+        assertEquals(0, new BigDecimal("120000.00").compareTo(resultado.getPreco()));
         verify(veiculoRepository, times(1)).findById(1L);
         verify(veiculoRepository, times(1)).save(veiculoExistente);
     }
@@ -99,9 +100,8 @@ class EditarVeiculoUseCaseTest {
             () -> editarVeiculoUseCase.execute(1L, veiculoAtualizado)
         );
 
-        assertEquals("Não é possível editar um veículo que já foi vendido", exception.getMessage());
+        assertEquals("Não é possível editar um veículo que não está disponível", exception.getMessage());
         verify(veiculoRepository, times(1)).findById(1L);
         verify(veiculoRepository, never()).save(any(Veiculo.class));
     }
 }
-

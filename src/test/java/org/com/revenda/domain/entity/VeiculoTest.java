@@ -3,6 +3,8 @@ package org.com.revenda.domain.entity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Testes para a entidade Veiculo")
@@ -44,7 +46,7 @@ class VeiculoTest {
         veiculo.setStatus(StatusVeiculo.DISPONIVEL);
 
         // Act
-        veiculo.marcarComoVendido();
+        veiculo.vender();
 
         // Assert
         assertEquals(StatusVeiculo.VENDIDO, veiculo.getStatus());
@@ -63,7 +65,7 @@ class VeiculoTest {
         veiculo.setModelo("Corolla");
         veiculo.setAno(2023);
         veiculo.setCor("Prata");
-        veiculo.setPreco(120000.0);
+        veiculo.setPreco(new BigDecimal("120000.00"));
         veiculo.setStatus(StatusVeiculo.DISPONIVEL);
 
         // Assert
@@ -72,8 +74,7 @@ class VeiculoTest {
         assertEquals("Corolla", veiculo.getModelo());
         assertEquals(2023, veiculo.getAno());
         assertEquals("Prata", veiculo.getCor());
-        assertEquals(120000.0, veiculo.getPreco());
+        assertEquals(0, new BigDecimal("120000.00").compareTo(veiculo.getPreco()));
         assertEquals(StatusVeiculo.DISPONIVEL, veiculo.getStatus());
     }
 }
-

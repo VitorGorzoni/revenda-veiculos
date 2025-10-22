@@ -94,12 +94,10 @@ class WebhookControllerTest {
         request.setStatus("INVALIDO");
 
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> {
-            webhookController.processarPagamento(request);
-        });
+        assertThrows(IllegalArgumentException.class,
+            () -> webhookController.processarPagamento(request));
 
         verify(processarPagamentoUseCase, never())
             .execute(anyString(), any(StatusPagamento.class));
     }
 }
-

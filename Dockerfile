@@ -12,8 +12,8 @@ RUN mvn dependency:go-offline -B
 # Agora copiar o código fonte
 COPY src ./src
 
-# Build da aplicação (sem modo offline para garantir que baixe dependências faltantes)
-RUN mvn clean package -DskipTests
+# Build da aplicação COM testes unitários
+RUN mvn clean package
 
 # Runtime stage
 FROM eclipse-temurin:21-jre-alpine

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,7 +34,7 @@ class CadastrarVeiculoUseCaseTest {
         veiculo.setModelo("Corolla");
         veiculo.setAno(2023);
         veiculo.setCor("Prata");
-        veiculo.setPreco(120000.0);
+        veiculo.setPreco(new BigDecimal("120000.00"));
     }
 
     @Test
@@ -60,7 +61,7 @@ class CadastrarVeiculoUseCaseTest {
         assertEquals("Corolla", resultado.getModelo());
         assertEquals(2023, resultado.getAno());
         assertEquals("Prata", resultado.getCor());
-        assertEquals(120000.0, resultado.getPreco());
+        assertEquals(new BigDecimal("120000.00"), resultado.getPreco());
         verify(veiculoRepository, times(1)).save(veiculo);
     }
 
@@ -89,4 +90,3 @@ class CadastrarVeiculoUseCaseTest {
         verify(veiculoRepository, times(1)).save(veiculo);
     }
 }
-
