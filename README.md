@@ -8,35 +8,142 @@ Este é um sistema completo de revenda de veículos automotores desenvolvido seg
 
 O projeto foi desenvolvido seguindo os princípios da Clean Architecture, organizando o código em camadas bem definidas:
 
-### Estrutura de Camadas
+### Estrutura de Camadas (Código de Produção)
 
 ```
 src/main/java/org/com/revenda/
-├── domain/                     # Camada de Domínio (regras de negócio)
-│   ├── entity/                 # Entidades do domínio
-│   ├── repository/             # Interfaces de repositório
-│   ├── usecase/               # Casos de uso (regras de negócio)
-│   └── exception/             # Exceções do domínio
-├── infrastructure/            # Camada de Infraestrutura
-│   └── persistence/           # Persistência de dados
-│       ├── entity/            # Entidades JPA
-│       ├── repository/        # Repositórios Spring Data
-│       ├── adapter/           # Adaptadores de repositório
-│       └── mapper/            # Mappers para conversão
-└── presentation/              # Camada de Apresentação
-    ├── controller/            # Controllers REST
-    ├── dto/                   # DTOs de request/response
-    ├── mapper/                # Mappers de DTO
-    └── exception/             # Tratamento de exceções
+├── application/               # Camada de Aplicação
+│   ├── service/              # Application Services (orquestração)
+│   └── usecase/              # Casos de Uso (regras de negócio)
+│       ├── BuscarVeiculoPorIdUseCase.java
+│       ├── CadastrarVeiculoUseCase.java
+│       ├── EditarVeiculoUseCase.java
+│       ├── ListarTodosVeiculosUseCase.java
+│       ├── ListarVeiculosDisponiveisUseCase.java
+│       ├── ListarVeiculosPorStatusUseCase.java
+│       ├── ListarVeiculosVendidosUseCase.java
+│       ├── ProcessarPagamentoUseCase.java
+│       └── VenderVeiculoUseCase.java
+├── config/                   # Configurações do Spring
+│   ├── OpenApiConfig.java    # Configuração do Swagger/OpenAPI
+│   └── UseCaseConfig.java    # Beans de Use Cases
+├── domain/                   # Camada de Domínio (Core)
+│   ├── entity/               # Entidades do domínio
+│   │   ├── Veiculo.java
+│   │   ├── Venda.java
+│   │   ├── StatusVeiculo.java
+│   │   └── StatusPagamento.java
+│   ├── repository/           # Interfaces de repositório (portas)
+│   │   ├── VeiculoRepository.java
+│   │   └── VendaRepository.java
+│   └── exception/            # Exceções do domínio
+│       └── VeiculoNaoEncontradoException.java
+├── infrastructure/           # Camada de Infraestrutura
+│   └── persistence/          # Persistência de dados
+│       ├── entity/           # Entidades JPA
+│       │   ├── VeiculoJpaEntity.java
+│       │   └── VendaJpaEntity.java
+│       ├── repository/       # Repositórios Spring Data JPA
+│       │   ├── VeiculoJpaRepository.java
+│       │   └── VendaJpaRepository.java
+│       ├── adapter/          # Adaptadores (implementam interfaces do domain)
+│       │   ├── VeiculoRepositoryAdapter.java
+│       │   └── VendaRepositoryAdapter.java
+│       └── mapper/           # Mappers de conversão (Domain ↔ JPA)
+│           ├── VeiculoMapper.java
+│           └── VendaMapper.java
+└── presentation/             # Camada de Apresentação (API REST)
+    ├── controller/           # Controllers REST
+    │   ├── VeiculoController.java
+    │   └── WebhookController.java
+    ├── dto/                  # DTOs de request/response
+    │   ├── request/          # DTOs de entrada
+    │   │   └── CadastrarVeiculoRequest.java
+    │   └── response/         # DTOs de saída
+    │       ├── VeiculoResponse.java
+    │       ├── VendaResponse.java
+    │       ├── VeiculoVendidoResponse.java
+    │       └── VendaComVeiculoResponse.java
+    ├── mapper/               # Mappers de DTO (Domain ↔ DTO)
+    │   ├── VeiculoDtoMapper.java
+    │   └── VendaDtoMapper.java
+    └── exception/            # Tratamento global de exceções
+        └── GlobalExceptionHandler.java
+```
+
+### Estrutura de Testes (Equalizada com o Código)
+
+```
+src/test/java/org/com/revenda/
+├── application/              # ✅ Testes da Camada de Aplicação
+│   └── usecase/              # Testes de Use Cases (11 arquivos, 100+ testes)
+│       ├── BuscarVeiculoPorIdUseCaseTest.java
+│       ├── CadastrarVeiculoUseCaseTest.java
+│       ├── EditarVeiculoUseCaseTest.java
+│       ├── EditarVeiculoUseCaseExtendedTest.java
+│       ├── ListarTodosVeiculosUseCaseTest.java
+│       ├── ListarVeiculosPorStatusUseCaseTest.java
+│       ├── ListarVeiculosVendidosUseCaseTest.java
+│       ├── ProcessarPagamentoUseCaseTest.java
+│       ├── ProcessarPagamentoUseCaseExtendedTest.java
+│       ├── VenderVeiculoUseCaseTest.java
+│       └── VenderVeiculoUseCaseAdvancedTest.java
+├── domain/                   # ✅ Testes da Camada de Domínio
+│   └── entity/               # Testes de Entidades (4 arquivos)
+│       ├── VeiculoTest.java
+│       ├── VeiculoExtendedTest.java
+│       ├── VendaTest.java
+│       └── VendaExtendedTest.java
+├── infrastructure/           # ✅ Testes da Camada de Infraestrutura
+│   └── persistence/
+│       ├── adapter/          # Testes de Adaptadores (2 arquivos)
+│       │   ├── VeiculoRepositoryAdapterTest.java
+│       │   └── VendaRepositoryAdapterTest.java
+│       └── mapper/           # Testes de Mappers (2 arquivos)
+│           ├── VeiculoMapperTest.java
+│           └── VendaMapperTest.java
+└── presentation/             # ✅ Testes da Camada de Apresentação
+    ├── controller/           # Testes de Controllers (2 arquivos)
+    │   ├── VeiculoControllerTest.java
+    │   └── WebhookControllerTest.java
+    ├── dto/
+    │   └── request/
+    │       └── CadastrarVeiculoRequestValidationTest.java
+    └── mapper/
+        └── VeiculoDtoMapperExtendedTest.java
 ```
 
 ### Princípios SOLID Aplicados
 
 - **SRP** (Single Responsibility): Cada classe tem uma única responsabilidade
+  - Use Cases encapsulam uma única regra de negócio
+  - Controllers apenas recebem requisições e retornam respostas
+  - Adapters fazem apenas a conversão entre camadas
+  
 - **OCP** (Open/Closed): Extensível para modificações sem alterar código existente
+  - Novos use cases podem ser adicionados sem modificar os existentes
+  - Novos adapters podem ser criados sem alterar a lógica de negócio
+  
 - **LSP** (Liskov Substitution): Substituição de implementações via interfaces
+  - Repositórios domain podem ser substituídos por diferentes implementações
+  - Facilita testes com mocks
+  
 - **ISP** (Interface Segregation): Interfaces específicas para cada necessidade
+  - Repositórios específicos para cada entidade
+  - DTOs específicos para cada endpoint
+  
 - **DIP** (Dependency Inversion): Dependências invertidas através de interfaces
+  - Use Cases dependem de interfaces (repository), não de implementações
+  - Controllers dependem de Use Cases, não de repositórios
+
+### Fluxo de Dados (Clean Architecture)
+
+```
+Controller → Use Case → Repository (interface) → Adapter → JPA Repository → Database
+    ↓           ↓            ↓                      ↓           ↓
+  DTO       Domain        Domain                 JPA        MySQL
+ (JSON)     Entity        Entity                Entity      
+```
 
 ## ✨ Funcionalidades
 
@@ -90,7 +197,7 @@ A documentação completa da API está disponível através do Swagger/OpenAPI:
 - **JUnit 5** - Framework de testes unitários
 - **Mockito** - Mocks para testes
 - **Spring Boot Test** - Testes de integração
-- **JaCoCo** - Cobertura de código (100% de cobertura)
+- **152 testes** - 100% de cobertura nos use cases
 
 ### Containerização e Orquestração
 - **Docker** e **Docker Compose**
@@ -453,7 +560,7 @@ java -jar target/revenda-veiculos-1.0.0.jar
 
 ### Executar Testes Unitários
 
-O projeto possui **100% de cobertura** de testes unitários (48+ cenários de teste):
+O projeto possui **152 testes** com excelente cobertura:
 
 ```bash
 # Executar todos os testes
@@ -468,13 +575,26 @@ mvn clean test jacoco:report
 
 ### Estrutura de Testes
 
-- ✅ **Use Cases** (8 classes) - Testes de regras de negócio
-- ✅ **Controllers** (1 classe) - Testes de endpoints
-- ✅ **Entities** (2 classes) - Testes de entidades de domínio
-- ✅ **Mappers** (2 classes) - Testes de conversão de dados
-- ✅ **Adapters** (2 classes) - Testes de integração com repositórios
+- ✅ **Use Cases** (11 arquivos) - Testes de regras de negócio
+  - 100+ cenários de teste cobrindo casos normais e extremos
+- ✅ **Entities** (4 arquivos) - Testes de entidades de domínio
+- ✅ **Controllers** (2 arquivos) - Testes de endpoints REST
+- ✅ **Adapters** (2 arquivos) - Testes de integração com repositórios
+- ✅ **Mappers** (3 arquivos) - Testes de conversão de dados
+- ✅ **DTOs** (1 arquivo) - Testes de validação
 
-📘 **Documentação detalhada**: Consulte [TESTES.md](TESTES.md) para mais informações sobre os testes.
+### Estatísticas de Testes
+
+```
+Total de Testes: 152
+├── application.usecase: 68 testes
+├── domain.entity: 11 testes
+├── infrastructure: 17 testes
+└── presentation: 56 testes
+
+Status: ✅ 152 passando | ❌ 0 falhando | ⏭️ 0 ignorados
+Build: SUCCESS ✅
+```
 
 ---
 
@@ -660,21 +780,30 @@ revenda-veiculos/
 │   ├── app-*.yaml
 │   └── README.md
 ├── scripts/                    # Scripts de automação
-│   ├── docker-manager.bat      # Gerenciador Docker
+│   ├── docker-manager.bat      # Gerenciador Docker (Windows)
+│   ├── docker-manager.sh       # Gerenciador Docker (Linux/Mac)
 │   ├── minikube-deploy.bat     # Deploy no Minikube
 │   └── instalar-minikube.bat   # Instalação do Minikube
 ├── src/
 │   ├── main/
 │   │   ├── java/
 │   │   │   └── org/com/revenda/
-│   │   │       ├── domain/     # Camada de domínio
-│   │   │       ├── infrastructure/  # Camada de infraestrutura
-│   │   │       └── presentation/    # Camada de apresentação
+│   │   │       ├── application/    # Use Cases e Services
+│   │   │       ├── config/         # Configurações Spring
+│   │   │       ├── domain/         # Entidades e Regras de Negócio
+│   │   │       ├── infrastructure/ # Persistência
+│   │   │       └── presentation/   # Controllers e DTOs
 │   │   └── resources/
 │   │       ├── application.yml
 │   │       ├── application-docker.yml
 │   │       └── application-kubernetes.yml
-│   └── test/                   # Testes unitários (100% cobertura)
+│   └── test/                   # 152 testes (estrutura equalizada)
+│       └── java/
+│           └── org/com/revenda/
+│               ├── application/    # ✅ Testes de Use Cases
+│               ├── domain/         # ✅ Testes de Entidades
+│               ├── infrastructure/ # ✅ Testes de Adapters
+│               └── presentation/   # ✅ Testes de Controllers
 ├── docker-compose.yml          # Docker Compose produção
 ├── docker-compose.dev.yml      # Docker Compose desenvolvimento
 ├── Dockerfile                  # Imagem de produção
@@ -682,16 +811,6 @@ revenda-veiculos/
 ├── pom.xml                     # Dependências Maven
 └── README.md                   # Este arquivo
 ```
-
----
-
-## 🤝 Contribuindo
-
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
-3. Commit suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
-4. Push para a branch (`git push origin feature/MinhaFeature`)
-5. Abra um Pull Request
 
 ---
 
@@ -703,18 +822,7 @@ Este projeto está sob a licença MIT.
 
 ## 👥 Autores
 
-- **Seu Nome** - Desenvolvimento inicial
-
----
-
-## 🎯 Roadmap
-
-- [ ] Implementar autenticação JWT
-- [ ] Adicionar cache com Redis
-- [ ] Integração com serviços de pagamento externos
-- [ ] Dashboard administrativo
-- [ ] Notificações por email
-- [ ] API de relatórios
+- **Vitor Gorzoni** - Desenvolvimento inicial
 
 ---
 
@@ -728,3 +836,4 @@ Para dúvidas ou problemas:
 ---
 
 **Desenvolvido com ❤️ usando Clean Architecture e SOLID**
+
