@@ -32,7 +32,7 @@ class VendaRepositoryAdapterTest {
     private VendaMapper vendaMapper;
 
     @InjectMocks
-    private VendaRepositoryAdapter vendaRepositoryAdapter;
+    private VendaPersistenceAdapter vendaPersistenceAdapter;
 
     private Venda venda;
     private VendaJpaEntity vendaEntity;
@@ -63,7 +63,7 @@ class VendaRepositoryAdapterTest {
         when(vendaMapper.toDomainEntity(vendaEntity)).thenReturn(venda);
 
         // Act
-        Venda resultado = vendaRepositoryAdapter.save(venda);
+        Venda resultado = vendaPersistenceAdapter.save(venda);
 
         // Assert
         assertNotNull(resultado);
@@ -81,7 +81,7 @@ class VendaRepositoryAdapterTest {
         when(vendaMapper.toDomainEntity(vendaEntity)).thenReturn(venda);
 
         // Act
-        Optional<Venda> resultado = vendaRepositoryAdapter.findById(1L);
+        Optional<Venda> resultado = vendaPersistenceAdapter.findById(1L);
 
         // Assert
         assertTrue(resultado.isPresent());
@@ -100,7 +100,7 @@ class VendaRepositoryAdapterTest {
         when(vendaMapper.toDomainEntity(vendaEntity)).thenReturn(venda);
 
         // Act
-        Optional<Venda> resultado = vendaRepositoryAdapter.findByCodigoPagamento(codigoPagamento);
+        Optional<Venda> resultado = vendaPersistenceAdapter.findByCodigoPagamento(codigoPagamento);
 
         // Assert
         assertTrue(resultado.isPresent());
@@ -117,7 +117,7 @@ class VendaRepositoryAdapterTest {
         when(vendaMapper.toDomainEntity(vendaEntity)).thenReturn(venda);
 
         // Act
-        List<Venda> resultado = vendaRepositoryAdapter.findAll();
+        List<Venda> resultado = vendaPersistenceAdapter.findAll();
 
         // Assert
         assertNotNull(resultado);

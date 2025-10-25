@@ -12,106 +12,140 @@ O projeto foi desenvolvido seguindo os princípios da Clean Architecture, organi
 
 ```
 src/main/java/org/com/revenda/
-├── application/               # Camada de Aplicação
-│   ├── service/              # Application Services (orquestração)
-│   └── usecase/              # Casos de Uso (regras de negócio)
-│       ├── BuscarVeiculoPorIdUseCase.java
-│       ├── CadastrarVeiculoUseCase.java
-│       ├── EditarVeiculoUseCase.java
-│       ├── ListarTodosVeiculosUseCase.java
-│       ├── ListarVeiculosDisponiveisUseCase.java
-│       ├── ListarVeiculosPorStatusUseCase.java
-│       ├── ListarVeiculosVendidosUseCase.java
-│       ├── ProcessarPagamentoUseCase.java
-│       └── VenderVeiculoUseCase.java
-├── config/                   # Configurações do Spring
-│   ├── OpenApiConfig.java    # Configuração do Swagger/OpenAPI
-│   └── UseCaseConfig.java    # Beans de Use Cases
-├── domain/                   # Camada de Domínio (Core)
-│   ├── entity/               # Entidades do domínio
+├── application/                    # Camada de Aplicação
+│   ├── gateway/                   # Interfaces de Gateway (portas)
+│   │   ├── VeiculoPersistenceGateway.java
+│   │   └── VendaPersistenceGateway.java
+│   ├── service/                   # Application Services (orquestração)
+│   │   ├── BuscarVeiculoPorIdService.java
+│   │   ├── CadastrarVeiculoService.java
+│   │   ├── EditarVeiculoService.java
+│   │   ├── ListarTodosVeiculosService.java
+│   │   ├── ListarVeiculosDisponiveisService.java
+│   │   ├── ListarVeiculosPorStatusService.java
+│   │   ├── ListarVeiculosVendidosService.java
+│   │   ├── ProcessarPagamentoService.java
+│   │   └── VenderVeiculoService.java
+│   └── usecase/                   # Interfaces de Casos de Uso
+│
+├── domain/                         # Camada de Domínio (Core)
+│   ├── entity/                    # Entidades do domínio
 │   │   ├── Veiculo.java
-│   │   ├── Venda.java
+│   │   └── Venda.java
+│   ├── enums/                     # Enumerações
 │   │   ├── StatusVeiculo.java
 │   │   └── StatusPagamento.java
-│   ├── repository/           # Interfaces de repositório (portas)
-│   │   ├── VeiculoRepository.java
-│   │   └── VendaRepository.java
-│   └── exception/            # Exceções do domínio
+│   └── exception/                 # Exceções do domínio
 │       └── VeiculoNaoEncontradoException.java
-├── infrastructure/           # Camada de Infraestrutura
-│   └── persistence/          # Persistência de dados
-│       ├── entity/           # Entidades JPA
-│       │   ├── VeiculoJpaEntity.java
-│       │   └── VendaJpaEntity.java
-│       ├── repository/       # Repositórios Spring Data JPA
-│       │   ├── VeiculoJpaRepository.java
-│       │   └── VendaJpaRepository.java
-│       ├── adapter/          # Adaptadores (implementam interfaces do domain)
-│       │   ├── VeiculoRepositoryAdapter.java
-│       │   └── VendaRepositoryAdapter.java
-│       └── mapper/           # Mappers de conversão (Domain ↔ JPA)
-│           ├── VeiculoMapper.java
-│           └── VendaMapper.java
-└── presentation/             # Camada de Apresentação (API REST)
-    ├── controller/           # Controllers REST
-    │   ├── VeiculoController.java
-    │   └── WebhookController.java
-    ├── dto/                  # DTOs de request/response
-    │   ├── request/          # DTOs de entrada
-    │   │   └── CadastrarVeiculoRequest.java
-    │   └── response/         # DTOs de saída
-    │       ├── VeiculoResponse.java
-    │       ├── VendaResponse.java
-    │       ├── VeiculoVendidoResponse.java
-    │       └── VendaComVeiculoResponse.java
-    ├── mapper/               # Mappers de DTO (Domain ↔ DTO)
-    │   ├── VeiculoDtoMapper.java
-    │   └── VendaDtoMapper.java
-    └── exception/            # Tratamento global de exceções
-        └── GlobalExceptionHandler.java
+│
+├── infrastructure/                 # Camada de Infraestrutura
+│   ├── config/                    # Configurações
+│   │   ├── OpenApiConfig.java
+│   │   └── LoggingConfig.java
+│   ├── persistence/               # Persistência de dados
+│   │   ├── adapter/              # Adaptadores (implementam gateways)
+│   │   │   ├── VeiculoPersistenceAdapter.java
+│   │   │   └── VendaPersistenceAdapter.java
+│   │   ├── entity/               # Entidades JPA
+│   │   │   ├── VeiculoJpaEntity.java
+│   │   │   └── VendaJpaEntity.java
+│   │   ├── mapper/               # Mappers (Domain ↔ JPA)
+│   │   │   ├── VeiculoMapper.java
+│   │   │   └── VendaMapper.java
+│   │   └── repository/           # Repositórios Spring Data JPA
+│   │       ├── VeiculoJpaRepository.java
+│   │       └── VendaJpaRepository.java
+│   └── web/                       # Camada Web (API REST)
+│       ├── controller/            # Controllers REST
+│       │   ├── VeiculoController.java
+│       │   └── WebhookController.java
+│       ├── dto/                   # DTOs de request/response
+│       │   ├── request/          # DTOs de entrada
+│       │   │   ├── CadastrarVeiculoRequest.java
+│       │   │   ├── VenderVeiculoRequest.java
+│       │   │   └── WebhookPagamentoRequest.java
+│       │   └── response/         # DTOs de saída
+│       │       ├── VeiculoResponse.java
+│       │       ├── VendaResponse.java
+│       │       ├── VeiculoVendidoResponse.java
+│       │       └── VendaComVeiculoResponse.java
+│       ├── mapper/               # Mappers de DTO (Domain ↔ DTO)
+│       │   ├── VeiculoDtoMapper.java
+│       │   └── VendaDtoMapper.java
+│       └── exception/            # Tratamento global de exceções
+│           └── GlobalExceptionHandler.java
+│
+└── RevendaVeiculosApplication.java # Classe principal
 ```
 
-### Estrutura de Testes (Equalizada com o Código)
+### Estrutura de Testes (Espelhando o Código de Produção)
 
 ```
 src/test/java/org/com/revenda/
-├── application/              # ✅ Testes da Camada de Aplicação
-│   └── usecase/              # Testes de Use Cases (11 arquivos, 100+ testes)
-│       ├── BuscarVeiculoPorIdUseCaseTest.java
-│       ├── CadastrarVeiculoUseCaseTest.java
-│       ├── EditarVeiculoUseCaseTest.java
-│       ├── EditarVeiculoUseCaseExtendedTest.java
-│       ├── ListarTodosVeiculosUseCaseTest.java
-│       ├── ListarVeiculosPorStatusUseCaseTest.java
-│       ├── ListarVeiculosVendidosUseCaseTest.java
-│       ├── ProcessarPagamentoUseCaseTest.java
-│       ├── ProcessarPagamentoUseCaseExtendedTest.java
-│       ├── VenderVeiculoUseCaseTest.java
-│       └── VenderVeiculoUseCaseAdvancedTest.java
-├── domain/                   # ✅ Testes da Camada de Domínio
-│   └── entity/               # Testes de Entidades (4 arquivos)
+├── application/                    # ✅ Testes da Camada de Aplicação
+│   └── service/                   # Testes de Services (8 arquivos)
+│       ├── BuscarVeiculoPorIdServiceTest.java
+│       ├── CadastrarVeiculoServiceTest.java
+│       ├── EditarVeiculoServiceTest.java
+│       ├── ListarTodosVeiculosServiceTest.java
+│       ├── ListarVeiculosPorStatusServiceTest.java
+│       ├── ListarVeiculosVendidosServiceTest.java
+│       ├── ProcessarPagamentoServiceTest.java
+│       └── VenderVeiculoServiceTest.java
+│
+├── domain/                         # ✅ Testes da Camada de Domínio
+│   └── entity/                    # Testes de Entidades (2 arquivos)
 │       ├── VeiculoTest.java
-│       ├── VeiculoExtendedTest.java
-│       ├── VendaTest.java
-│       └── VendaExtendedTest.java
-├── infrastructure/           # ✅ Testes da Camada de Infraestrutura
-│   └── persistence/
-│       ├── adapter/          # Testes de Adaptadores (2 arquivos)
-│       │   ├── VeiculoRepositoryAdapterTest.java
-│       │   └── VendaRepositoryAdapterTest.java
-│       └── mapper/           # Testes de Mappers (2 arquivos)
-│           ├── VeiculoMapperTest.java
-│           └── VendaMapperTest.java
-└── presentation/             # ✅ Testes da Camada de Apresentação
-    ├── controller/           # Testes de Controllers (2 arquivos)
-    │   ├── VeiculoControllerTest.java
-    │   └── WebhookControllerTest.java
-    ├── dto/
-    │   └── request/
-    │       └── CadastrarVeiculoRequestValidationTest.java
-    └── mapper/
-        └── VeiculoDtoMapperExtendedTest.java
+│       └── VendaTest.java
+│
+├── infrastructure/                 # ✅ Testes da Camada de Infraestrutura
+│   ├── persistence/
+│   │   ├── adapter/              # Testes de Adaptadores (2 arquivos)
+│   │   │   ├── VeiculoPersistenceAdapterTest.java (renomeado)
+│   │   │   └── VendaPersistenceAdapterTest.java (renomeado)
+│   │   └── mapper/               # Testes de Mappers (2 arquivos)
+│   │       ├── VeiculoMapperTest.java
+│   │       └── VendaMapperTest.java
+│   └── web/
+│       ├── controller/            # Testes de Controllers (2 arquivos)
+│       │   ├── VeiculoControllerTest.java
+│       │   └── WebhookControllerTest.java
+│       ├── dto/
+│       │   ├── request/          # Testes de Validação (3 arquivos - NOVOS!)
+│       │   │   ├── CadastrarVeiculoRequestValidationTest.java
+│       │   │   ├── VenderVeiculoRequestValidationTest.java ⭐ NOVO
+│       │   │   └── WebhookPagamentoRequestValidationTest.java ⭐ NOVO
+│       │   └── response/         # Testes de Response (4 arquivos - NOVOS!)
+│       │       ├── VeiculoResponseTest.java ⭐ NOVO
+│       │       ├── VendaResponseTest.java ⭐ NOVO
+│       │       ├── VendaComVeiculoResponseTest.java ⭐ NOVO
+│       │       └── VeiculoVendidoResponseTest.java ⭐ NOVO
+│       └── mapper/               # Testes de Mappers Web (1 arquivo)
+│           └── VeiculoDtoMapperExtendedTest.java
 ```
+
+### 📊 Cobertura de Testes
+
+**Total: 207 testes passando com sucesso! ✅**
+
+#### Distribuição por Camada:
+- **Application Layer**: 14 testes (Services)
+- **Domain Layer**: 11 testes (Entities)
+- **Infrastructure - Persistence**: 17 testes (Adapters + Mappers)
+- **Infrastructure - Web**: 165 testes
+  - Controllers: 6 testes
+  - DTOs Request: 80 testes (validações completas)
+  - DTOs Response: 37 testes (getters/setters/equals/toString)
+  - Mappers: 16 testes
+
+#### Novos Testes Criados (143 testes):
+- ✅ **VenderVeiculoRequestValidationTest** - 30 testes de validação
+- ✅ **WebhookPagamentoRequestValidationTest** - 26 testes de validação
+- ✅ **VeiculoResponseTest** - 9 testes (construtor, getters/setters, equals, toString)
+- ✅ **VendaResponseTest** - 9 testes (construtor, getters/setters, equals, toString)
+- ✅ **VendaComVeiculoResponseTest** - 8 testes (construtor, getters/setters)
+- ✅ **VeiculoVendidoResponseTest** - 11 testes (construtor, getters/setters, equals, toString)
+- ✅ **CadastrarVeiculoRequestValidationTest** - 50 testes existentes (organizado com @Nested)
 
 ### Princípios SOLID Aplicados
 
@@ -836,4 +870,3 @@ Para dúvidas ou problemas:
 ---
 
 **Desenvolvido com ❤️ usando Clean Architecture e SOLID**
-

@@ -1,5 +1,7 @@
 package org.com.revenda.domain.entity;
 
+import org.com.revenda.domain.enums.StatusVeiculo;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -56,6 +58,16 @@ public class Veiculo {
         this.status = StatusVeiculo.VENDIDO;
     }
 
+    public void marcarComoReservado() {
+        if (this.status == StatusVeiculo.VENDIDO) {
+            throw new IllegalStateException("Veículo já está vendido");
+        }
+        if (this.status == StatusVeiculo.RESERVADO) {
+            throw new IllegalStateException("Veículo já está reservado");
+        }
+        this.status = StatusVeiculo.RESERVADO;
+    }
+
     public void marcarComoDisponivel() {
         this.status = StatusVeiculo.DISPONIVEL;
     }
@@ -67,5 +79,8 @@ public class Veiculo {
     public boolean isVendido() {
         return StatusVeiculo.VENDIDO.equals(this.status);
     }
-}
 
+    public boolean isReservado() {
+        return StatusVeiculo.RESERVADO.equals(this.status);
+    }
+}

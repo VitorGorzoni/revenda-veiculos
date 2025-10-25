@@ -19,7 +19,7 @@
         </encoder>
     </appender>
 
-    <!-- File Appender - Application Log -->
+    <!-- File Appender - Application Log (apenas para ambiente local) -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_FILE}.log</file>
         <encoder>
@@ -34,7 +34,7 @@
         </rollingPolicy>
     </appender>
 
-    <!-- File Appender - Error Log -->
+    <!-- File Appender - Error Log (apenas para ambiente local) -->
     <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_FILE}-error.log</file>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -70,8 +70,11 @@
     <!-- Logger da aplicação -->
     <logger name="org.com.revenda" level="INFO" additivity="false">
         <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="ASYNC_FILE"/>
-        <appender-ref ref="ASYNC_ERROR_FILE"/>
+        <!-- File appenders apenas em ambiente local (default) -->
+        <springProfile name="default,dev">
+            <appender-ref ref="ASYNC_FILE"/>
+            <appender-ref ref="ASYNC_ERROR_FILE"/>
+        </springProfile>
     </logger>
 
     <!-- Logger do Spring Framework -->
@@ -96,31 +99,19 @@
         <logger name="org.hibernate.SQL" level="DEBUG"/>
     </springProfile>
 
-    <!-- Profile: docker -->
-    <springProfile name="docker">
+    <!-- Profile: docker e kubernetes - Apenas console -->
+    <springProfile name="docker,kubernetes">
         <logger name="org.com.revenda" level="INFO"/>
-        <logger name="org.springframework" level="WARN"/>
-        <logger name="org.hibernate" level="WARN"/>
-    </springProfile>
-
-    <!-- Profile: kubernetes -->
-    <springProfile name="kubernetes">
-        <logger name="org.com.revenda" level="INFO"/>
-        <logger name="org.springframework" level="WARN"/>
-        <logger name="org.hibernate" level="WARN"/>
-    </springProfile>
-
-    <!-- Profile: test -->
-    <springProfile name="test">
-        <logger name="org.com.revenda" level="DEBUG"/>
-        <logger name="org.springframework.test" level="INFO"/>
+        <logger name="org.springframework.web" level="INFO"/>
     </springProfile>
 
     <!-- Root Logger -->
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="ASYNC_FILE"/>
-        <appender-ref ref="ASYNC_ERROR_FILE"/>
+        <!-- File appenders apenas em ambiente local (default) -->
+        <springProfile name="default,dev">
+            <appender-ref ref="ASYNC_FILE"/>
+            <appender-ref ref="ASYNC_ERROR_FILE"/>
+        </springProfile>
     </root>
-
 </configuration>

@@ -1,6 +1,7 @@
 package org.com.revenda.infrastructure.persistence.mapper;
 
 import org.com.revenda.domain.entity.Venda;
+import org.com.revenda.domain.enums.StatusPagamento;
 import org.com.revenda.infrastructure.persistence.entity.VendaJpaEntity;
 import org.springframework.stereotype.Component;
 

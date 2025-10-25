@@ -1,5 +1,7 @@
 package org.com.revenda.domain.entity;
 
+import org.com.revenda.domain.enums.StatusPagamento;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;

@@ -31,10 +31,12 @@ springdoc:
     path: /swagger-ui.html
     enabled: true
 
-# Logging Configuration
+# Logging Configuration - APENAS CONSOLE NO DOCKER
 logging:
   level:
     org.com: INFO
     org.springframework.web: INFO
     org.hibernate.SQL: WARN
     org.hibernate.type.descriptor.sql.BasicBinder: WARN
+  # Desabilita o arquivo de log customizado - usa apenas console
+  config: classpath:logback-docker.xml

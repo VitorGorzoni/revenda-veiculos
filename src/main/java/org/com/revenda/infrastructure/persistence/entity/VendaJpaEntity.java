@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.com.revenda.domain.entity.StatusPagamento;
+import org.com.revenda.domain.enums.StatusPagamento;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -42,4 +42,3 @@ public class VendaJpaEntity {
     @Column(name = "data_venda", nullable = false)
     private LocalDateTime dataVenda;
 }
-

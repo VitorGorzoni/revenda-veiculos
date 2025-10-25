@@ -13,4 +13,6 @@ public interface VendaJpaRepository extends JpaRepository<VendaJpaEntity, Long> 
     Optional<VendaJpaEntity> findByCodigoPagamento(String codigoPagamento);
 
     List<VendaJpaEntity> findAll();
+
+    List<VendaJpaEntity> findAllByOrderByValorVendaDesc();
 }

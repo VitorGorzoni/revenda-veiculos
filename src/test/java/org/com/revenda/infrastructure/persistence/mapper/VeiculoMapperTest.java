@@ -1,6 +1,6 @@
 package org.com.revenda.infrastructure.persistence.mapper;
 
-import org.com.revenda.domain.entity.StatusVeiculo;
+import org.com.revenda.domain.enums.StatusVeiculo;
 import org.com.revenda.domain.entity.Veiculo;
 import org.com.revenda.infrastructure.persistence.entity.VeiculoJpaEntity;
 import org.junit.jupiter.api.BeforeEach;

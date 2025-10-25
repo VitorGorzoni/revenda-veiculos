@@ -1,5 +1,6 @@
 package org.com.revenda.domain.entity;
 
+import org.com.revenda.domain.enums.StatusPagamento;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

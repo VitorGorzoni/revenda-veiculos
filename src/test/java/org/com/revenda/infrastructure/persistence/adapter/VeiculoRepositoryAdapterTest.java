@@ -1,6 +1,6 @@
 package org.com.revenda.infrastructure.persistence.adapter;
 
-import org.com.revenda.domain.entity.StatusVeiculo;
+import org.com.revenda.domain.enums.StatusVeiculo;
 import org.com.revenda.domain.entity.Veiculo;
 import org.com.revenda.infrastructure.persistence.entity.VeiculoJpaEntity;
 import org.com.revenda.infrastructure.persistence.mapper.VeiculoMapper;
@@ -32,7 +32,7 @@ class VeiculoRepositoryAdapterTest {
     private VeiculoMapper mapper;
 
     @InjectMocks
-    private VeiculoRepositoryAdapter veiculoRepositoryAdapter;
+    private VeiculoPersistenceAdapter veiculoPersistenceAdapter;
 
     private Veiculo veiculo;
     private VeiculoJpaEntity veiculoEntity;
@@ -59,7 +59,7 @@ class VeiculoRepositoryAdapterTest {
         when(mapper.toDomainEntity(veiculoEntity)).thenReturn(veiculo);
 
         // Act
-        Veiculo resultado = veiculoRepositoryAdapter.save(veiculo);
+        Veiculo resultado = veiculoPersistenceAdapter.save(veiculo);
 
         // Assert
         assertNotNull(resultado);
@@ -77,7 +77,7 @@ class VeiculoRepositoryAdapterTest {
         when(mapper.toDomainEntity(veiculoEntity)).thenReturn(veiculo);
 
         // Act
-        Optional<Veiculo> resultado = veiculoRepositoryAdapter.findById(1L);
+        Optional<Veiculo> resultado = veiculoPersistenceAdapter.findById(1L);
 
         // Assert
         assertTrue(resultado.isPresent());
@@ -93,7 +93,7 @@ class VeiculoRepositoryAdapterTest {
         when(jpaRepository.findById(999L)).thenReturn(Optional.empty());
 
         // Act
-        Optional<Veiculo> resultado = veiculoRepositoryAdapter.findById(999L);
+        Optional<Veiculo> resultado = veiculoPersistenceAdapter.findById(999L);
 
         // Assert
         assertFalse(resultado.isPresent());
@@ -110,7 +110,7 @@ class VeiculoRepositoryAdapterTest {
         when(mapper.toDomainEntity(veiculoEntity)).thenReturn(veiculo);
 
         // Act
-        List<Veiculo> resultado = veiculoRepositoryAdapter.findAll();
+        List<Veiculo> resultado = veiculoPersistenceAdapter.findAll();
 
         // Assert
         assertNotNull(resultado);
@@ -129,7 +129,7 @@ class VeiculoRepositoryAdapterTest {
         when(mapper.toDomainEntity(veiculoEntity)).thenReturn(veiculo);
 
         // Act
-        List<Veiculo> resultado = veiculoRepositoryAdapter
+        List<Veiculo> resultado = veiculoPersistenceAdapter
             .findByStatusOrderByPrecoAsc(StatusVeiculo.DISPONIVEL);
 
         // Assert
@@ -140,4 +140,3 @@ class VeiculoRepositoryAdapterTest {
         verify(mapper, times(1)).toDomainEntity(veiculoEntity);
     }
 }
-

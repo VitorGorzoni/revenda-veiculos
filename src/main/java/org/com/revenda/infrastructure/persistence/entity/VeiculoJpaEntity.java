@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.com.revenda.domain.entity.StatusVeiculo;
+import org.com.revenda.domain.enums.StatusVeiculo;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
