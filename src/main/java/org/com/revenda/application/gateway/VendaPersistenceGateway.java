@@ -1,6 +1,7 @@
 package org.com.revenda.application.gateway;
 
 import org.com.revenda.domain.entity.Venda;
+import org.com.revenda.domain.enums.StatusPagamento;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,4 +17,5 @@ public interface VendaPersistenceGateway {
     Optional<Venda> findById(Long id);
     List<Venda> findAll();
     List<Venda> findAllOrderByValorVendaDesc();
+    List<Venda> findByStatusPagamento(StatusPagamento statusPagamento);
 }

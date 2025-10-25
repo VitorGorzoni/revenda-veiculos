@@ -185,503 +185,96 @@ Controller → Use Case → Repository (interface) → Adapter → JPA Repositor
 
 1. ✅ **Cadastrar Veículo** - Adicionar novos veículos ao sistema
 2. ✏️ **Editar Veículo** - Modificar dados de veículos disponíveis
-3. 💰 **Vender Veículo** - Processar venda com geração de código de pagamento
-4. 📋 **Listar Veículos** - Filtrar por status (disponível/vendido) ordenados por preço
+3. 💰 **Vender Veículo** - Processar venda com geração de código de pagamento e reserva do veículo
+4. 📋 **Listar Veículos** - Filtrar por status (disponível/vendido/reservado) ordenados por preço
 5. 🔍 **Buscar Veículo por ID** - Obter detalhes de um veículo específico
-6. 🔔 **Webhook de Pagamento** - Confirmar ou cancelar pagamentos
+6. 📊 **Listar Vendas** - Filtrar vendas por status de pagamento (pendente/confirmado/cancelado)
+7. 🔔 **Webhook de Pagamento** - Confirmar ou cancelar pagamentos
 
 ### 🌐 Endpoints da API
 
 #### Veículos
 
 - `GET /api/veiculos` - Listar todos os veículos ou filtrar por status
-  - Query param: `?status=DISPONIVEL` ou `?status=VENDIDO`
+  - Query param: `?status=DISPONIVEL` ou `?status=VENDIDO` ou `?status=RESERVADO`
 - `GET /api/veiculos/{id}` - Buscar veículo por ID
 - `POST /api/veiculos` - Cadastrar novo veículo
 - `PUT /api/veiculos/{id}` - Editar veículo existente
-- `POST /api/veiculos/{id}/venda` - Vender veículo
+- `POST /api/veiculos/{id}/venda` - Iniciar venda de veículo (marca como RESERVADO)
+
+#### Vendas ⭐ NOVO
+
+- `GET /api/vendas` - Listar todas as vendas ou filtrar por status de pagamento
+  - Query param: `?status=PENDENTE` ou `?status=CONFIRMADO` ou `?status=CANCELADO`
 
 #### Webhook
 
-- `POST /api/webhook/pagamento` - Processar status de pagamento
+- `POST /api/webhook/pagamento` - Processar status de pagamento (confirma venda ou libera veículo)
 
-### 📖 Documentação da API
+### 📚 Documentação da API (Swagger)
 
-A documentação completa da API está disponível através do Swagger/OpenAPI:
-- **Swagger UI**: `http://localhost:8080/swagger-ui.html`
-- **OpenAPI JSON**: `http://localhost:8080/api-docs`
+A API possui documentação interativa completa via **Swagger UI**, onde você pode visualizar todos os endpoints, modelos de dados e testar as requisições diretamente pelo navegador.
 
-## 🛠️ Tecnologias Utilizadas
+#### Como acessar o Swagger UI:
 
-### Backend
-- **Java 21** - Linguagem principal
-- **Spring Boot 3.3.4** - Framework
-  - Spring Web
-  - Spring Data JPA
-  - Spring Validation
-  - Spring Actuator
-- **MySQL 8.0** - Banco de dados para produção
-- **Maven** - Gerenciamento de dependências
-- **Lombok** - Redução de boilerplate
+1. **Certifique-se que a aplicação está rodando** (porta 8080)
+2. **Abra seu navegador** (Chrome, Firefox, Edge, etc.)
+3. **Acesse a URL**: http://localhost:8080/swagger-ui.html
 
-### Documentação
-- **SpringDoc OpenAPI** - Documentação automática da API
+#### Recursos disponíveis no Swagger:
 
-### Testes
-- **JUnit 5** - Framework de testes unitários
-- **Mockito** - Mocks para testes
-- **Spring Boot Test** - Testes de integração
-- **152 testes** - 100% de cobertura nos use cases
+- 📖 **Documentação completa** de todos os endpoints
+- 🧪 **Testar requisições** diretamente pelo navegador (Try it out)
+- 📝 **Visualizar modelos** de Request e Response
+- ✅ **Validações** e regras de cada campo
+- 📊 **Códigos de resposta HTTP** e exemplos
 
-### Containerização e Orquestração
-- **Docker** e **Docker Compose**
-- **Kubernetes** com manifests completos
-- **Minikube** para testes locais
+#### Endpoints disponíveis no Swagger:
 
-## 🚀 Como Executar Localmente
+**Veículos:**
+- GET /api/veiculos - Listar/filtrar veículos por status
+- GET /api/veiculos/{id} - Buscar veículo por ID
+- POST /api/veiculos - Cadastrar novo veículo
+- PUT /api/veiculos/{id} - Editar veículo
+- POST /api/veiculos/{id}/venda - Vender veículo
 
-### Pré-requisitos
+**Vendas:** ⭐
+- GET /api/vendas - Listar todas as vendas ou filtrar por status de pagamento
+  - Filtros disponíveis: PENDENTE, CONFIRMADO, CANCELADO
 
-- **Java 21** ou superior
-- **Maven 3.6+**
-- **Docker Desktop** (para execução com containers)
+**Webhook:**
+- POST /api/webhook/pagamento - Confirmar ou cancelar pagamento
 
----
+#### URLs alternativas:
 
-## 🐳 Opção 1: Executar com Docker Compose (Recomendado)
-
-A forma **mais simples e rápida** de executar a aplicação localmente é usando os scripts de gerenciamento Docker:
-
-### Início Rápido
-
-#### **Windows**
-```bash
-# 1. Clone o repositório
-git clone <url-do-repositorio>
-cd revenda-veiculos
-
-# 2. Iniciar a aplicação (build + MySQL + App)
-scripts\docker-manager.bat start
-```
-
-#### **Linux/Mac**
-```bash
-# 1. Clone o repositório
-git clone <url-do-repositorio>
-cd revenda-veiculos
-
-# 2. Dar permissão de execução (primeira vez)
-chmod +x scripts/docker-manager.sh
-
-# 3. Iniciar a aplicação (build + MySQL + App)
-./scripts/docker-manager.sh start
-```
-
-✅ **Pronto!** A aplicação estará disponível em:
-- **API**: http://localhost:8080
 - **Swagger UI**: http://localhost:8080/swagger-ui.html
+- **OpenAPI JSON**: http://localhost:8080/api-docs
+- **OpenAPI YAML**: http://localhost:8080/api-docs.yaml
 
-### 📋 Comandos Disponíveis
+#### Ambientes diferentes:
 
-#### **Windows (docker-manager.bat)**
-```bash
-# Build das imagens Docker
-scripts\docker-manager.bat build
-
-# Iniciar containers (reconstrói automaticamente)
-scripts\docker-manager.bat start
-
-# Parar containers
-scripts\docker-manager.bat stop
-
-# Reiniciar containers (rebuild + restart)
-scripts\docker-manager.bat restart
-
-# Ver logs em tempo real
-scripts\docker-manager.bat logs
-
-# Ver logs de um serviço específico
-scripts\docker-manager.bat logs app
-scripts\docker-manager.bat logs mysql
-
-# Ver status dos containers
-scripts\docker-manager.bat status
-
-# Limpar tudo (containers, volumes, imagens)
-scripts\docker-manager.bat clean
-
-# Ambiente de desenvolvimento (com hot reload e debug)
-scripts\docker-manager.bat dev
-
-# Ambiente de produção
-scripts\docker-manager.bat prod
-
-# Ver ajuda completa
-scripts\docker-manager.bat help
+**Local (desenvolvimento):**
+```
+http://localhost:8080/swagger-ui.html
 ```
 
-#### **Linux/Mac (docker-manager.sh)**
-```bash
-# Build das imagens Docker
-./scripts/docker-manager.sh build
-
-# Iniciar containers (reconstrói automaticamente)
-./scripts/docker-manager.sh start
-
-# Parar containers
-./scripts/docker-manager.sh stop
-
-# Reiniciar containers (rebuild + restart)
-./scripts/docker-manager.sh restart
-
-# Ver logs em tempo real
-./scripts/docker-manager.sh logs
-
-# Ver logs de um serviço específico
-./scripts/docker-manager.sh logs app
-./scripts/docker-manager.sh logs mysql
-
-# Ver status dos containers
-./scripts/docker-manager.sh status
-
-# Limpar tudo (containers, volumes, imagens)
-./scripts/docker-manager.sh clean
-
-# Ambiente de desenvolvimento (com hot reload e debug)
-./scripts/docker-manager.sh dev
-
-# Ambiente de produção
-./scripts/docker-manager.sh prod
-
-# Ver ajuda completa
-./scripts/docker-manager.sh help
+**Docker:**
+```
+http://localhost:8080/swagger-ui.html
 ```
 
-### 🎯 O que o script faz?
-
-- ✅ **Build automático** - Reconstrói a imagem Docker antes de iniciar
-- ✅ **MySQL configurado** - Banco de dados pronto para uso
-- ✅ **Healthchecks** - Aguarda o MySQL estar pronto antes de iniciar a app
-- ✅ **Volumes persistentes** - Dados do MySQL são preservados
-- ✅ **Cache otimizado** - Dependências Maven são cacheadas (builds mais rápidos)
-- ✅ **Restart inteligente** - Reinicia apenas se falhar
-
-### 🐳 Opção Alternativa: Docker Compose Tradicional
-
-Se preferir usar os comandos nativos do Docker Compose:
-
-#### **Build e Start**
-```bash
-# Build e iniciar em modo produção
-docker-compose up --build
-
-# Build e iniciar em segundo plano (detached)
-docker-compose up --build -d
-
-# Build e iniciar em modo desenvolvimento
-docker-compose -f docker-compose.dev.yml up --build -d
+**Kubernetes (Minikube):**
 ```
-
-#### **Outros Comandos Úteis**
-```bash
-# Apenas build (sem iniciar)
-docker-compose build
-
-# Iniciar containers já buildados
-docker-compose up -d
-
-# Parar containers
-docker-compose down
-
-# Parar e remover volumes (limpa banco de dados)
-docker-compose down -v
-
-# Ver logs em tempo real
-docker-compose logs -f
-
-# Ver logs de um serviço específico
-docker-compose logs -f revenda-app
-docker-compose logs -f mysql
-
-# Ver status dos containers
-docker-compose ps
-
-# Rebuild apenas um serviço
-docker-compose build revenda-app
-
-# Reiniciar um serviço específico
-docker-compose restart revenda-app
+http://revenda-veiculos.local/swagger-ui.html
 ```
+> ⚠️ **Nota**: Para Kubernetes, configure o arquivo `hosts` primeiro (veja seção de deploy)
 
-#### **Diferença entre os arquivos:**
-- **`docker-compose.yml`** - Ambiente de **produção** (otimizado, imagem final)
-- **`docker-compose.dev.yml`** - Ambiente de **desenvolvimento** (hot reload, debug habilitado)
+## 🚀 Exemplos de Uso
 
----
-
-## ☸️ Opção 2: Executar no Minikube (Kubernetes Local)
-
-Para testar a aplicação em um ambiente **Kubernetes local**, use o script `minikube-deploy.bat`:
-
-### Pré-requisitos Adicionais
-
-1. **Instalar Minikube e kubectl**
-
-   **Opção A: Script Automático (Recomendado)**
-   ```bash
-   # Execute como Administrador
-   scripts\instalar-minikube.bat
-   ```
-
-   **Opção B: Manual via Chocolatey**
-   ```powershell
-   # Execute PowerShell como Administrador
-   choco install minikube kubernetes-cli -y
-   ```
-
-2. **Certifique-se que o Docker Desktop está rodando**
-
-### 🚀 Deploy Completo no Minikube
+### 1. Listar veículos disponíveis
 
 ```bash
-# Deploy completo (setup + build + deploy)
-scripts\minikube-deploy.bat all
-```
-
-O script executará automaticamente:
-1. ⚙️ **Setup** - Iniciar o Minikube e habilitar addons
-2. 🐳 **Build** - Construir a imagem Docker dentro do Minikube
-3. 🚀 **Deploy** - Aplicar todos os manifests Kubernetes
-4. 🌐 **Access** - Mostrar a URL de acesso
-
-### 📋 Comandos do minikube-deploy.bat
-
-```bash
-# Configurar Minikube (iniciar + addons)
-scripts\minikube-deploy.bat setup
-
-# Build da imagem Docker no Minikube
-scripts\minikube-deploy.bat build
-
-# Deploy da aplicação no Kubernetes
-scripts\minikube-deploy.bat deploy
-
-# Deploy completo (setup + build + deploy)
-scripts\minikube-deploy.bat all
-
-# Ver status dos pods e services
-scripts\minikube-deploy.bat status
-
-# Ver instruções e URLs de acesso
-scripts\minikube-deploy.bat access
-
-# Limpar todos os recursos
-scripts\minikube-deploy.bat cleanup
-
-# Ver ajuda completa
-scripts\minikube-deploy.bat help
-```
-
-### 🌐 Como Acessar a Aplicação no Minikube
-
-Após o deploy, você tem **3 opções**:
-
-#### **Opção 1: Via NodePort (Mais Simples)** ⭐
-
-```bash
-# O script já mostra a URL automaticamente após o deploy
-scripts\minikube-deploy.bat access
-
-# A URL será algo como: http://192.168.49.2:30220
-```
-
-Acesse:
-- **API**: `http://<IP>:<PORTA>`
-- **Swagger**: `http://<IP>:<PORTA>/swagger-ui.html`
-
-#### **Opção 2: Via Ingress**
-
-```bash
-# 1. Obter IP do Minikube
-minikube ip
-
-# 2. Adicionar no arquivo hosts (Execute como Administrador)
-# Arquivo: C:\Windows\System32\drivers\etc\hosts
-# Adicione: <IP_DO_MINIKUBE> revenda-veiculos.local
-# Exemplo: 192.168.49.2 revenda-veiculos.local
-
-# 3. Acessar
-# http://revenda-veiculos.local
-# http://revenda-veiculos.local/swagger-ui.html
-```
-
-#### **Opção 3: Via Tunnel**
-
-```bash
-# Execute em um terminal separado (mantenha rodando)
-minikube tunnel
-
-# Acesse: http://revenda-veiculos.local
-```
-
-### 📦 Recursos Deployados no Kubernetes
-
-O script `minikube-deploy.bat all` cria automaticamente:
-
-- ✅ **Namespace**: `revenda-veiculos`
-- ✅ **ConfigMap**: Configurações da aplicação
-- ✅ **Secret**: Credenciais do banco de dados (base64)
-- ✅ **MySQL**: 
-  - Deployment (1 réplica)
-  - Service (ClusterIP)
-  - PersistentVolumeClaim (armazenamento persistente)
-- ✅ **Aplicação**: 
-  - Deployment (2 réplicas)
-  - Service (LoadBalancer)
-  - Ingress (roteamento HTTP)
-  - HPA (auto-scaling: 2-10 réplicas)
-
-### 🔧 Comandos Úteis do Kubernetes
-
-```bash
-# Ver todos os recursos
-kubectl get all -n revenda-veiculos
-
-# Ver logs da aplicação em tempo real
-kubectl logs -f -n revenda-veiculos -l app=revenda-app
-
-# Ver logs do MySQL
-kubectl logs -f -n revenda-veiculos -l app=mysql
-
-# Ver detalhes de um pod
-kubectl describe pod <nome-do-pod> -n revenda-veiculos
-
-# Acessar shell de um pod
-kubectl exec -it <nome-do-pod> -n revenda-veiculos -- /bin/sh
-
-# Escalar manualmente a aplicação
-kubectl scale deployment revenda-app-deployment -n revenda-veiculos --replicas=5
-
-# Ver eventos (útil para troubleshooting)
-kubectl get events -n revenda-veiculos --sort-by='.lastTimestamp'
-
-# Ver uso de recursos
-kubectl top pods -n revenda-veiculos
-```
-
----
-
-## 📝 Opção 3: Executar com Maven (Sem Docker)
-
-```bash
-# 1. Configurar banco de dados MySQL local
-mysql -u root -p
-CREATE DATABASE revenda_veiculos;
-CREATE USER 'app'@'localhost' IDENTIFIED BY 'app123';
-GRANT ALL PRIVILEGES ON revenda_veiculos.* TO 'app'@'localhost';
-
-# 2. Executar a aplicação
-mvn spring-boot:run
-
-# Ou compilar e executar o JAR
-mvn clean package -DskipTests
-java -jar target/revenda-veiculos-1.0.0.jar
-```
-
----
-
-## 🧪 Testes
-
-### Executar Testes Unitários
-
-O projeto possui **152 testes** com excelente cobertura:
-
-```bash
-# Executar todos os testes
-mvn test
-
-# Executar com relatório de cobertura JaCoCo
-mvn clean test jacoco:report
-
-# Ver relatório de cobertura no navegador
-# Abrir: target/site/jacoco/index.html
-```
-
-### Estrutura de Testes
-
-- ✅ **Use Cases** (11 arquivos) - Testes de regras de negócio
-  - 100+ cenários de teste cobrindo casos normais e extremos
-- ✅ **Entities** (4 arquivos) - Testes de entidades de domínio
-- ✅ **Controllers** (2 arquivos) - Testes de endpoints REST
-- ✅ **Adapters** (2 arquivos) - Testes de integração com repositórios
-- ✅ **Mappers** (3 arquivos) - Testes de conversão de dados
-- ✅ **DTOs** (1 arquivo) - Testes de validação
-
-### Estatísticas de Testes
-
-```
-Total de Testes: 152
-├── application.usecase: 68 testes
-├── domain.entity: 11 testes
-├── infrastructure: 17 testes
-└── presentation: 56 testes
-
-Status: ✅ 152 passando | ❌ 0 falhando | ⏭️ 0 ignorados
-Build: SUCCESS ✅
-```
-
----
-
-## 📚 Documentação Adicional
-
-- 📘 [TESTES.md](TESTES.md) - Guia completo de testes unitários e cobertura
-- 📘 [INSTALACAO_MINIKUBE.md](INSTALACAO_MINIKUBE.md) - Guia detalhado de instalação do Minikube
-- 📘 [GUIA_TESTES_ENDPOINTS.md](GUIA_TESTES_ENDPOINTS.md) - Como testar os endpoints da API
-- 📘 [k8s/README.md](k8s/README.md) - Documentação dos manifests Kubernetes
-
----
-
-## 🔍 Exemplo de Uso da API
-
-### 1. Cadastrar um veículo
-
-```bash
-curl -X POST http://localhost:8080/api/veiculos \
-  -H "Content-Type: application/json" \
-  -d '{
-    "marca": "Toyota",
-    "modelo": "Corolla",
-    "ano": 2023,
-    "cor": "Prata",
-    "preco": 120000.00
-  }'
-```
-
-**Resposta:**
-```json
-{
-  "id": 1,
-  "marca": "Toyota",
-  "modelo": "Corolla",
-  "ano": 2023,
-  "cor": "Prata",
-  "preco": 120000.00,
-  "status": "DISPONIVEL",
-  "dataCadastro": "2025-01-18T10:00:00"
-}
-```
-
-### 2. Listar veículos
-
-```bash
-# Todos os veículos
-curl http://localhost:8080/api/veiculos
-
-# Apenas disponíveis
-curl "http://localhost:8080/api/veiculos?status=DISPONIVEL"
-
-# Apenas vendidos
-curl "http://localhost:8080/api/veiculos?status=VENDIDO"
+curl http://localhost:8080/api/veiculos?status=DISPONIVEL
 ```
 
 **Resposta:**
@@ -689,18 +282,24 @@ curl "http://localhost:8080/api/veiculos?status=VENDIDO"
 [
   {
     "id": 1,
-    "marca": "Toyota",
-    "modelo": "Corolla",
-    "ano": 2023,
-    "cor": "Prata",
-    "preco": 120000.00,
-    "status": "DISPONIVEL",
-    "dataCadastro": "2025-01-18T10:00:00"
+    "modelo": "Fusca",
+    "marca": "VW",
+    "ano": 1972,
+    "preco": 25000.00,
+    "status": "DISPONIVEL"
+  },
+  {
+    "id": 2,
+    "modelo": "Civic",
+    "marca": "Honda",
+    "ano": 2020,
+    "preco": 90000.00,
+    "status": "DISPONIVEL"
   }
 ]
 ```
 
-### 3. Buscar veículo por ID
+### 2. Buscar veículo por ID
 
 ```bash
 curl http://localhost:8080/api/veiculos/1
@@ -710,41 +309,61 @@ curl http://localhost:8080/api/veiculos/1
 ```json
 {
   "id": 1,
-  "marca": "Toyota",
-  "modelo": "Corolla",
-  "ano": 2023,
-  "cor": "Prata",
-  "preco": 120000.00,
-  "status": "DISPONIVEL",
-  "dataCadastro": "2025-01-18T10:00:00"
+  "modelo": "Fusca",
+  "marca": "VW",
+  "ano": 1972,
+  "preco": 25000.00,
+  "status": "DISPONIVEL"
 }
 ```
 
-### 4. Editar um veículo
+### 3. Cadastrar um novo veículo
 
 ```bash
-curl -X PUT http://localhost:8080/api/veiculos/1 \
+curl -X POST http://localhost:8080/api/veiculos \
   -H "Content-Type: application/json" \
   -d '{
-    "marca": "Toyota",
-    "modelo": "Corolla XEI",
-    "ano": 2024,
-    "cor": "Preto",
-    "preco": 135000.00
+    "modelo": "Gol",
+    "marca": "VW",
+    "ano": 2020,
+    "preco": 50000.00
   }'
 ```
 
 **Resposta:**
 ```json
 {
-  "id": 1,
-  "marca": "Toyota",
-  "modelo": "Corolla XEI",
-  "ano": 2024,
-  "cor": "Preto",
-  "preco": 135000.00,
-  "status": "DISPONIVEL",
-  "dataCadastro": "2025-01-18T10:00:00"
+  "id": 3,
+  "modelo": "Gol",
+  "marca": "VW",
+  "ano": 2020,
+  "preco": 50000.00,
+  "status": "DISPONIVEL"
+}
+```
+
+### 4. Editar um veículo existente
+
+```bash
+curl -X PUT http://localhost:8080/api/veiculos/3 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "modelo": "Gol GTI",
+    "marca": "VW",
+    "ano": 2021,
+    "preco": 55000.00
+  }'
+```
+
+**Resposta:**
+```json
+{
+  "id": 3,
+  "modelo": "Gol GTI",
+  "marca": "VW",
+  "ano": 2021,
+  "preco": 55000.00,
+  "status": "DISPONIVEL"
 }
 ```
 
@@ -754,8 +373,9 @@ curl -X PUT http://localhost:8080/api/veiculos/1 \
 curl -X POST http://localhost:8080/api/veiculos/1/venda \
   -H "Content-Type: application/json" \
   -d '{
-    "cpfComprador": "123.456.789-00",
-    "dataVenda": "2025-01-18T14:30:00"
+    "cpfCliente": "473.640.598-98",
+    "nomeCliente": "João Silva",
+    "valorVenda": 120000.00
   }'
 ```
 
@@ -764,14 +384,46 @@ curl -X POST http://localhost:8080/api/veiculos/1/venda \
 {
   "id": 1,
   "veiculoId": 1,
-  "cpfComprador": "123.456.789-00",
+  "cpfCliente": "473.640.598-98",
   "dataVenda": "2025-01-18T14:30:00",
   "codigoPagamento": "PAG-ABC12345",
   "statusPagamento": "PENDENTE"
 }
 ```
 
-### 6. Confirmar pagamento via webhook
+**Observação:** O veículo agora fica com status `RESERVADO` aguardando confirmação de pagamento.
+
+### 6. Listar vendas ⭐ NOVO
+
+```bash
+# Listar todas as vendas
+curl http://localhost:8080/api/vendas
+
+# Apenas vendas pendentes
+curl "http://localhost:8080/api/vendas?status=PENDENTE"
+
+# Apenas vendas confirmadas
+curl "http://localhost:8080/api/vendas?status=CONFIRMADO"
+
+# Apenas vendas canceladas
+curl "http://localhost:8080/api/vendas?status=CANCELADO"
+```
+
+**Resposta:**
+```json
+[
+  {
+    "id": 1,
+    "veiculoId": 1,
+    "cpfCliente": "473.640.598-98",
+    "dataVenda": "2025-01-18T14:30:00",
+    "codigoPagamento": "PAG-ABC12345",
+    "statusPagamento": "PENDENTE"
+  }
+]
+```
+
+### 7. Confirmar pagamento via webhook
 
 ```bash
 curl -X POST http://localhost:8080/api/webhook/pagamento \
@@ -784,7 +436,9 @@ curl -X POST http://localhost:8080/api/webhook/pagamento \
 
 **Resposta:** `200 OK` (sem corpo)
 
-### 7. Cancelar pagamento via webhook
+**Observação:** O veículo agora fica com status `VENDIDO`.
+
+### 8. Cancelar pagamento via webhook
 
 ```bash
 curl -X POST http://localhost:8080/api/webhook/pagamento \
@@ -797,76 +451,4 @@ curl -X POST http://localhost:8080/api/webhook/pagamento \
 
 **Resposta:** `200 OK` (sem corpo)
 
----
-
-## 📦 Estrutura do Projeto
-
-```
-revenda-veiculos/
-├── docker/                      # Configurações Docker
-│   └── mysql/
-│       └── init.sql            # Script de inicialização do MySQL
-├── k8s/                        # Manifests Kubernetes
-│   ├── namespace.yaml
-│   ├── configmap.yaml
-│   ├── secret.yaml
-│   ├── mysql-*.yaml
-│   ├── app-*.yaml
-│   └── README.md
-├── scripts/                    # Scripts de automação
-│   ├── docker-manager.bat      # Gerenciador Docker (Windows)
-│   ├── docker-manager.sh       # Gerenciador Docker (Linux/Mac)
-│   ├── minikube-deploy.bat     # Deploy no Minikube
-│   └── instalar-minikube.bat   # Instalação do Minikube
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── org/com/revenda/
-│   │   │       ├── application/    # Use Cases e Services
-│   │   │       ├── config/         # Configurações Spring
-│   │   │       ├── domain/         # Entidades e Regras de Negócio
-│   │   │       ├── infrastructure/ # Persistência
-│   │   │       └── presentation/   # Controllers e DTOs
-│   │   └── resources/
-│   │       ├── application.yml
-│   │       ├── application-docker.yml
-│   │       └── application-kubernetes.yml
-│   └── test/                   # 152 testes (estrutura equalizada)
-│       └── java/
-│           └── org/com/revenda/
-│               ├── application/    # ✅ Testes de Use Cases
-│               ├── domain/         # ✅ Testes de Entidades
-│               ├── infrastructure/ # ✅ Testes de Adapters
-│               └── presentation/   # ✅ Testes de Controllers
-├── docker-compose.yml          # Docker Compose produção
-├── docker-compose.dev.yml      # Docker Compose desenvolvimento
-├── Dockerfile                  # Imagem de produção
-├── Dockerfile.dev              # Imagem de desenvolvimento
-├── pom.xml                     # Dependências Maven
-└── README.md                   # Este arquivo
-```
-
----
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT.
-
----
-
-## 👥 Autores
-
-- **Vitor Gorzoni** - Desenvolvedor
-
----
-
-## 📞 Suporte
-
-Para dúvidas ou problemas:
-- 📧 Email: vitorgorzoni.contato@gmail.com
-- 🐛 Issues: [GitHub Issues](https://github.com/usuario/revenda-veiculos/issues)
-- 📖 Documentação: [Wiki do Projeto](https://github.com/usuario/revenda-veiculos/wiki)
-
----
-
-**Desenvolvido com ❤️ usando Clean Architecture e SOLID**
+**Observação:** O veículo agora fica disponível para venda novamente.

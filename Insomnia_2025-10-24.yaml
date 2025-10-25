@@ -1,0 +1,394 @@
+type: collection.insomnia.rest/5.0
+name: 🚗 Revenda de Veículos API v1.0.0
+meta:
+  id: wrk_c281476e14c743ec95ea1d592de4dcaf
+  created: 1760835177688
+  modified: 1760835177688
+  description: ""
+collection:
+  - name: 🔍 Monitoramento
+    meta:
+      id: fld_cff4dada7c434107a88535e49863debf
+      created: 1705594100000
+      modified: 1705594100000
+      sortKey: -1705594100000
+      description: Endpoints para monitoramento e health check
+    children:
+      - url: "{{ _.dockerUrl }}/actuator/health"
+        name: Health Check
+        meta:
+          id: req_21deecccf26e4e35849da7b1cc83e97b
+          created: 1705594200000
+          modified: 1761360032970
+          isPrivate: false
+          description: Verifica o status da aplicação e conectividade com o banco de dados
+          sortKey: -1705594200000
+        method: GET
+        headers:
+          - name: Accept
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: 🚗 Veículos
+    meta:
+      id: fld_cec5eb49d4e244c897f5d1f2eb88086d
+      created: 1705594110000
+      modified: 1705594110000
+      sortKey: -1705594110000
+      description: CRUD completo de veículos
+    children:
+      - url: "{{ _.dockerUrl }}/api/veiculos"
+        name: Cadastrar Veículo
+        meta:
+          id: req_31fad11bfdba4f4bb8de16bea9057bd2
+          created: 1705594210000
+          modified: 1761137444529
+          isPrivate: false
+          description: Cadastra um novo veículo para venda
+          sortKey: -1705594210000
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "marca": "Ferrari",
+              "modelo": "458 Italia",
+              "ano": 2024,
+              "cor": "Amarela",
+              "preco": 15000.00
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.dockerUrl }}/api/veiculos"
+        name: Listar Todos os Veículos
+        meta:
+          id: req_2242d188d2344aa0982e97b7e871f7b4
+          created: 1705594220000
+          modified: 1761137477305
+          isPrivate: false
+          description: Lista todos os veículos cadastrados (endpoint unificado)
+          sortKey: -1705594220000
+        method: GET
+        headers:
+          - name: Accept
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.dockerUrl }}/api/veiculos"
+        name: Listar Veículos Disponíveis
+        meta:
+          id: req_f5f1f9e98426470ab22bef3215b9b071
+          created: 1705594230000
+          modified: 1761097666140
+          isPrivate: false
+          description: Lista apenas veículos disponíveis para venda
+          sortKey: -1705594230000
+        method: GET
+        parameters:
+          - name: status
+            value: DISPONIVEL
+            description: Filtro por status do veículo
+            id: pair_f8caea436c4f49cc81c98cc196591415
+            type: text
+            multiline: false
+        headers:
+          - name: Accept
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.dockerUrl }}/api/veiculos"
+        name: Listar Veículos Vendidos
+        meta:
+          id: req_c704c8fba04542ce8ec0c73420df5df6
+          created: 1705594240000
+          modified: 1761087106260
+          isPrivate: false
+          description: Lista apenas veículos já vendidos
+          sortKey: -1705594240000
+        method: GET
+        parameters:
+          - name: status
+            value: VENDIDO
+            description: Filtro por status do veículo
+            id: pair_b6713a2ea41e443cb2abaa9bd5bf94e0
+            disabled: false
+        headers:
+          - name: Accept
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.dockerUrl }}/api/veiculos/1"
+        name: Buscar Veículo por ID
+        meta:
+          id: req_3da8d56a3df74de28f369c822154c585
+          created: 1705594250000
+          modified: 1761087114829
+          isPrivate: false
+          description: Busca um veículo específico pelo seu ID
+          sortKey: -1705594250000
+        method: GET
+        headers:
+          - name: Accept
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseUrl }}/api/veiculos/1"
+        name: Editar Veículo
+        meta:
+          id: req_953e9510cc3d49e2ac6bb879286250a2
+          created: 1705594260000
+          modified: 1761137501121
+          isPrivate: false
+          description: Atualiza os dados de um veículo existente
+          sortKey: -1705594260000
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "marca": "Toyota",
+              "modelo": "Corolla TAOS",
+              "ano": 2024,
+              "cor": "Branco Pérola",
+              "preco": 92000.00
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: 💰 Vendas
+    meta:
+      id: fld_88ed435f8f5d42ea88cba7303f6f101b
+      created: 1705594120000
+      modified: 1705594120000
+      sortKey: -1705594120000
+      description: Gestão de vendas de veículos
+    children:
+      - url: "{{ _.baseUrl }}/api/veiculos/8/venda"
+        name: Efetuar Venda
+        meta:
+          id: req_d9ec53177fb5413e9a406085758705f8
+          created: 1705594270000
+          modified: 1761360594964
+          isPrivate: false
+          description: Registra a venda de um veículo
+          sortKey: -1705594270000
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "cpfCliente": "473.640.598-98",
+              "nomeCliente": "Vitor",
+              "valorVenda": 123.30
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseUrl }}/api/vendas"
+        name: Listar Venda
+        meta:
+          id: req_30027a57cbd7466baad0cb1ff0567e87
+          created: 1761360269427
+          modified: 1761360831840
+          isPrivate: false
+          description: Registra a venda de um veículo
+          sortKey: -1705594265000
+        method: GET
+        body:
+          mimeType: application/json
+          text: ""
+        parameters:
+          - id: pair_17b37ea83b6945f8a88230c60e323db5
+            name: status
+            value: PENDENTE
+            description: ""
+            disabled: false
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: 🔄 Webhooks
+    meta:
+      id: fld_b9645953040240b5b1d24cabc8469887
+      created: 1705594130000
+      modified: 1705594130000
+      sortKey: -1705594130000
+      description: Webhooks para processamento de pagamentos
+    children:
+      - url: "{{ _.dockerUrl }}/api/webhook/pagamento"
+        name: Confirmar Pagamento (Webhook)
+        meta:
+          id: req_d781382bb5754550b338fff542d50264
+          created: 1705594280000
+          modified: 1761358217410
+          isPrivate: false
+          description: Webhook para confirmação de pagamento
+          sortKey: -1705594280000
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "codigoPagamento": "PAG-1021D35D",
+              "status": "CONFIRMADO"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: 📝 Exemplos
+    meta:
+      id: fld_3e026d2003d54efebcf7e0aa6bd2318d
+      created: 1705594140000
+      modified: 1705594140000
+      sortKey: -1705594140000
+      description: Exemplos de requisições para teste
+    children:
+      - url: "{{ _.dockerUrl }}/api/veiculos"
+        name: "Exemplo: Cadastrar Honda Civic"
+        meta:
+          id: req_fcb53e281a414ba09ac26a7e6af143c9
+          created: 1705594290000
+          modified: 1761137459047
+          isPrivate: false
+          description: Exemplo de cadastro de veículo Honda Civic
+          sortKey: -1705594290000
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "marca": "Honda",
+              "modelo": "Civic",
+              "ano": 2024,
+              "cor": "Azul Metálico",
+              "preco": 98000.00
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.dockerUrl }}/api/veiculos"
+        name: "Exemplo: Cadastrar Volkswagen Jetta"
+        meta:
+          id: req_303fa6a2851946ff9b39fe9acf25c462
+          created: 1705594300000
+          modified: 1761137450868
+          isPrivate: false
+          description: Exemplo de cadastro de veículo Volkswagen Jetta
+          sortKey: -1705594300000
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "marca": "Volkswagen",
+              "modelo": "Jetta",
+              "ano": 2023,
+              "cor": "Preto",
+              "preco": 105000.00
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_fea1cf4daacaad56c9fa0260ada119743fd894e4
+    created: 1760835178694
+    modified: 1760835178694
+environments:
+  name: Base Environment
+  meta:
+    id: env_fc9e85277f4649dbb0238e25b3de0d1d
+    created: 1705594050000
+    modified: 1760922298944
+    isPrivate: false
+  data:
+    baseUrl: http://localhost:8080
+    dockerUrl: http://localhost:8080
+    kubernetesUrl: http://127.0.0.1:50132

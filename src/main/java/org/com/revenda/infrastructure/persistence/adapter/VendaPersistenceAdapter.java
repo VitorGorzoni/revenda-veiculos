@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.com.revenda.application.gateway.VendaPersistenceGateway;
 import org.com.revenda.domain.entity.Venda;
+import org.com.revenda.domain.enums.StatusPagamento;
 import org.com.revenda.infrastructure.persistence.mapper.VendaMapper;
 import org.com.revenda.infrastructure.persistence.repository.VendaJpaRepository;
 import org.springframework.stereotype.Component;
@@ -90,6 +91,19 @@ public class VendaPersistenceAdapter implements VendaPersistenceGateway {
             .collect(Collectors.toList());
 
         log.info("Encontradas {} vendas ordenadas por valor", result.size());
+        return result;
+    }
+
+    @Override
+    public List<Venda> findByStatusPagamento(StatusPagamento statusPagamento) {
+        log.debug("Buscando vendas com status de pagamento: {}", statusPagamento);
+
+        var result = jpaRepository.findByStatusPagamento(statusPagamento)
+            .stream()
+            .map(mapper::toDomainEntity)
+            .collect(Collectors.toList());
+
+        log.info("Encontradas {} vendas com status {}", result.size(), statusPagamento);
         return result;
     }
 }

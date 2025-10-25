@@ -1,5 +1,6 @@
 package org.com.revenda.infrastructure.persistence.repository;
 
+import org.com.revenda.domain.enums.StatusPagamento;
 import org.com.revenda.infrastructure.persistence.entity.VendaJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -15,4 +16,6 @@ public interface VendaJpaRepository extends JpaRepository<VendaJpaEntity, Long> 
     List<VendaJpaEntity> findAll();
 
     List<VendaJpaEntity> findAllByOrderByValorVendaDesc();
+
+    List<VendaJpaEntity> findByStatusPagamento(StatusPagamento statusPagamento);
 }

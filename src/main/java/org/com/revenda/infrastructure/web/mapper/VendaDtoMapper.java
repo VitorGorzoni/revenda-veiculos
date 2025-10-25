@@ -64,6 +64,15 @@ public class VendaDtoMapper {
     }
 
     /**
+     * Mapeia uma lista de Vendas para uma lista de VendaResponse
+     */
+    public List<VendaResponse> toResponseList(List<Venda> vendas) {
+        return vendas.stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Mapeia uma lista de Vendas para uma lista de VendaComVeiculoResponse
      */
     public List<VendaComVeiculoResponse> toVendaComVeiculoResponseList(List<Venda> vendas) {

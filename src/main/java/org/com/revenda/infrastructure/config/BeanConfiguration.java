@@ -63,5 +63,14 @@ public class BeanConfiguration {
     public ListarVeiculosVendidosUseCase listarVeiculosVendidosUseCase(VendaPersistenceGateway vendaPersistenceGateway) {
         return new ListarVeiculosVendidosService(vendaPersistenceGateway);
     }
-}
 
+    @Bean
+    public ListarTodasVendasUseCase listarTodasVendasUseCase(VendaPersistenceGateway vendaPersistenceGateway) {
+        return new ListarTodasVendasService(vendaPersistenceGateway);
+    }
+
+    @Bean
+    public ListarVendasPorStatusPagamentoUseCase listarVendasPorStatusPagamentoUseCase(VendaPersistenceGateway vendaPersistenceGateway) {
+        return new ListarVendasPorStatusPagamentoService(vendaPersistenceGateway);
+    }
+}
