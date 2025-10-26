@@ -1,5 +1,9 @@
 # Sistema de Revenda de Veículos
 
+## 📋 Descrição do Projeto
+
+Este é um sistema completo de revenda de veículos automotores desenvolvido seguindo os princípios de **Clean Architecture** e **SOLID**. A aplicação fornece uma API REST robusta para gerenciar o cadastro, edição, venda e listagem de veículos, além de processar webhooks de pagamento.
+
 ## 🔧 Especificações Técnicas
 
 ### Tecnologias Utilizadas
@@ -108,10 +112,6 @@ MYSQL_DATABASE=revenda_veiculos
 MYSQL_USER=app
 MYSQL_PASSWORD=app123
 ```
-
-## 📋 Descrição do Projeto
-
-Este é um sistema completo de revenda de veículos automotores desenvolvido seguindo os princípios de **Clean Architecture** e **SOLID**. A aplicação fornece uma API REST robusta para gerenciar o cadastro, edição, venda e listagem de veículos, além de processar webhooks de pagamento.
 
 ## 🏗️ Arquitetura
 
