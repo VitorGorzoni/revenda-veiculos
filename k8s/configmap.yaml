@@ -10,6 +10,7 @@ data:
   SPRING_JPA_SHOW_SQL: "false"
   SERVER_PORT: "8080"
   LOGGING_LEVEL_ORG_COM: "INFO"
+  LOGGING_CONFIG: "classpath:logback-kubernetes.xml"
   db.host: "mysql-service"
   db.port: "3306"
   db.name: "revenda_veiculos"

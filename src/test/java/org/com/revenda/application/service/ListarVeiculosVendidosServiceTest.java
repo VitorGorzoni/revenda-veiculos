@@ -45,10 +45,10 @@ class ListarVeiculosVendidosServiceTest {
     }
 
     @Test
-    @DisplayName("Deve listar veículos vendidos ordenados por valor")
+    @DisplayName("Deve listar veículos vendidos ordenados por valor (menor para maior)")
     void deveListarVeiculosVendidosOrdenadosPorValor() {
         // Given
-        when(vendaPersistenceGateway.findAllOrderByValorVendaDesc()).thenReturn(vendas);
+        when(vendaPersistenceGateway.findAllOrderByValorVendaAsc()).thenReturn(vendas);
 
         // When
         List<Venda> resultado = listarVeiculosVendidosService.execute();
@@ -57,7 +57,6 @@ class ListarVeiculosVendidosServiceTest {
         assertThat(resultado).isNotEmpty();
         assertThat(resultado).hasSize(2);
         assertThat(resultado.get(0).getCpfCliente()).isEqualTo("123.456.789-00");
-        verify(vendaPersistenceGateway).findAllOrderByValorVendaDesc();
+        verify(vendaPersistenceGateway).findAllOrderByValorVendaAsc();
     }
 }
-

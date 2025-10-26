@@ -21,6 +21,19 @@ if "%1"=="" goto :help
 
 goto :help
 
+:maven_build
+echo.
+echo ☕ Compilando aplicação Java com Maven...
+echo ==========================================
+call mvnw.cmd clean package -DskipTests
+if errorlevel 1 (
+    echo ❌ Erro no build do Maven
+    exit /b 1
+)
+echo ✅ Build Maven concluído!
+echo.
+exit /b 0
+
 :help
 echo.
 echo 🐳 Gerenciador Docker - Revenda de Veículos
@@ -42,6 +55,8 @@ goto :eof
 
 :build
 echo 🔨 Fazendo build das imagens Docker...
+call :maven_build
+if errorlevel 1 exit /b 1
 echo 🛑 Parando containers antigos...
 docker-compose down
 echo 🗑️ Removendo imagens antigas...

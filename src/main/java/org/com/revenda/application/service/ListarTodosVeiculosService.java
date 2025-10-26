@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.com.revenda.application.gateway.VeiculoPersistenceGateway;
 import org.com.revenda.application.usecase.ListarTodosVeiculosUseCase;
 import org.com.revenda.domain.entity.Veiculo;
+import org.com.revenda.domain.enums.StatusVeiculo;
 
 import java.util.List;
 
@@ -19,8 +20,7 @@ public class ListarTodosVeiculosService implements ListarTodosVeiculosUseCase {
 
     @Override
     public List<Veiculo> execute() {
-        log.debug("Listando todos os veículos");
-        return veiculoPersistenceGateway.findAll();
+        log.debug("Listando veículos disponíveis ordenados por preço (menor para maior)");
+        return veiculoPersistenceGateway.findByStatusOrderByPrecoAsc(StatusVeiculo.DISPONIVEL);
     }
 }
-

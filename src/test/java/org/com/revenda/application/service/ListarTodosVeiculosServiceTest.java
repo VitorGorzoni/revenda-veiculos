@@ -2,6 +2,7 @@ package org.com.revenda.application.service;
 
 import org.com.revenda.application.gateway.VeiculoPersistenceGateway;
 import org.com.revenda.domain.entity.Veiculo;
+import org.com.revenda.domain.enums.StatusVeiculo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,10 +44,10 @@ class ListarTodosVeiculosServiceTest {
     }
 
     @Test
-    @DisplayName("Deve listar todos os veículos")
+    @DisplayName("Deve listar todos os veículos disponíveis ordenados por preço")
     void deveListarTodosVeiculos() {
         // Given
-        when(veiculoPersistenceGateway.findAll()).thenReturn(veiculos);
+        when(veiculoPersistenceGateway.findByStatusOrderByPrecoAsc(StatusVeiculo.DISPONIVEL)).thenReturn(veiculos);
 
         // When
         List<Veiculo> resultado = listarTodosVeiculosService.execute();
@@ -54,21 +55,20 @@ class ListarTodosVeiculosServiceTest {
         // Then
         assertThat(resultado).isNotEmpty();
         assertThat(resultado).hasSize(2);
-        verify(veiculoPersistenceGateway).findAll();
+        verify(veiculoPersistenceGateway).findByStatusOrderByPrecoAsc(StatusVeiculo.DISPONIVEL);
     }
 
     @Test
-    @DisplayName("Deve retornar lista vazia quando não houver veículos")
+    @DisplayName("Deve retornar lista vazia quando não houver veículos disponíveis")
     void deveRetornarListaVaziaQuandoNaoHouverVeiculos() {
         // Given
-        when(veiculoPersistenceGateway.findAll()).thenReturn(Collections.emptyList());
+        when(veiculoPersistenceGateway.findByStatusOrderByPrecoAsc(StatusVeiculo.DISPONIVEL)).thenReturn(Collections.emptyList());
 
         // When
         List<Veiculo> resultado = listarTodosVeiculosService.execute();
 
         // Then
         assertThat(resultado).isEmpty();
-        verify(veiculoPersistenceGateway).findAll();
+        verify(veiculoPersistenceGateway).findByStatusOrderByPrecoAsc(StatusVeiculo.DISPONIVEL);
     }
 }
-

@@ -1,5 +1,114 @@
 # Sistema de Revenda de Veículos
 
+## 🔧 Especificações Técnicas
+
+### Tecnologias Utilizadas
+
+#### Backend
+- **Java**: 21 (LTS)
+- **Spring Boot**: 3.3.4
+- **Spring Data JPA**: Persistência de dados
+- **Spring Validation**: Validação de dados
+- **Spring Actuator**: Monitoramento e health checks
+- **Maven**: 3.9.5+ (Gerenciamento de dependências)
+
+#### Banco de Dados
+- **MySQL**: 8.0
+  - Porta padrão: 3306
+  - Database: `revenda_veiculos`
+  - Charset: UTF-8
+- **H2 Database**: Para testes (em memória)
+- **Hibernate**: ORM (Object-Relational Mapping)
+  - Dialeto: MySQLDialect
+  - DDL Auto: update
+
+#### Documentação
+- **SpringDoc OpenAPI**: 2.6.0
+- **Swagger UI**: Interface interativa da API
+- **OpenAPI 3.0**: Especificação da API
+
+#### Ferramentas de Desenvolvimento
+- **Lombok**: Redução de código boilerplate
+- **MySQL Connector/J**: Driver JDBC para MySQL
+
+#### Testes
+- **JUnit 5**: Framework de testes
+- **Mockito**: Mocks para testes unitários
+- **Spring Boot Test**: Testes de integração
+- **Testcontainers**: Testes com containers Docker
+  - Testcontainers MySQL
+  - Testcontainers JUnit Jupiter
+- **Cobertura**: 207 testes (100% dos casos de uso cobertos)
+
+#### Containerização e Orquestração
+- **Docker**: Containerização da aplicação
+  - Base Image Build: `maven:3.9.5-eclipse-temurin-21`
+  - Base Image Runtime: `eclipse-temurin:21-jre-alpine`
+  - Multi-stage build para otimização de tamanho
+- **Docker Compose**: Orquestração local (app + MySQL)
+- **Kubernetes**: Orquestração em produção
+  - Minikube para ambiente local
+  - Deployments, Services, ConfigMaps, Secrets
+  - HPA (Horizontal Pod Autoscaler)
+  - Ingress para roteamento
+
+#### Logs e Monitoramento
+- **Logback**: Framework de logs
+- **SLF4J**: API de logging
+- **Spring Actuator**: Health checks e métricas
+  - Endpoint: `/actuator/health`
+
+### Requisitos do Ambiente
+
+#### Desenvolvimento Local
+```
+- Java 21 (JDK)
+- Maven 3.9.5+
+- MySQL 8.0
+- IDE (IntelliJ IDEA, Eclipse, VS Code)
+```
+
+#### Docker
+```
+- Docker Engine 20.10+
+- Docker Compose 2.0+
+```
+
+#### Kubernetes (opcional)
+```
+- Minikube 1.30+
+- kubectl 1.27+
+- Driver: Docker ou VirtualBox
+```
+
+### Portas Utilizadas
+
+| Serviço | Porta | Descrição |
+|---------|-------|-----------|
+| Aplicação Spring Boot | 8080 | API REST |
+| MySQL | 3306 | Banco de dados |
+| Swagger UI | 8080/swagger-ui.html | Documentação interativa |
+| Actuator | 8080/actuator | Monitoramento |
+
+### Variáveis de Ambiente
+
+#### Aplicação
+```properties
+SPRING_PROFILES_ACTIVE=local|docker|kubernetes
+SPRING_DATASOURCE_URL=jdbc:mysql://host:3306/revenda_veiculos
+SPRING_DATASOURCE_USERNAME=root
+SPRING_DATASOURCE_PASSWORD=root
+SERVER_PORT=8080
+```
+
+#### MySQL (Docker)
+```properties
+MYSQL_ROOT_PASSWORD=root
+MYSQL_DATABASE=revenda_veiculos
+MYSQL_USER=app
+MYSQL_PASSWORD=app123
+```
+
 ## 📋 Descrição do Projeto
 
 Este é um sistema completo de revenda de veículos automotores desenvolvido seguindo os princípios de **Clean Architecture** e **SOLID**. A aplicação fornece uma API REST robusta para gerenciar o cadastro, edição, venda e listagem de veículos, além de processar webhooks de pagamento.

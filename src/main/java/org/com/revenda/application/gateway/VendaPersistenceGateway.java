@@ -17,5 +17,6 @@ public interface VendaPersistenceGateway {
     Optional<Venda> findById(Long id);
     List<Venda> findAll();
     List<Venda> findAllOrderByValorVendaDesc();
+    List<Venda> findAllOrderByValorVendaAsc();
     List<Venda> findByStatusPagamento(StatusPagamento statusPagamento);
 }

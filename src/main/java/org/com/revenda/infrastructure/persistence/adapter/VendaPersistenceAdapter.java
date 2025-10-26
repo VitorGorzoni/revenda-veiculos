@@ -95,6 +95,19 @@ public class VendaPersistenceAdapter implements VendaPersistenceGateway {
     }
 
     @Override
+    public List<Venda> findAllOrderByValorVendaAsc() {
+        log.debug("Buscando todas as vendas ordenadas por valor (menor para maior)");
+
+        var result = jpaRepository.findAllByOrderByValorVendaAsc()
+            .stream()
+            .map(mapper::toDomainEntity)
+            .collect(Collectors.toList());
+
+        log.info("Encontradas {} vendas ordenadas por valor (menor para maior)", result.size());
+        return result;
+    }
+
+    @Override
     public List<Venda> findByStatusPagamento(StatusPagamento statusPagamento) {
         log.debug("Buscando vendas com status de pagamento: {}", statusPagamento);
 

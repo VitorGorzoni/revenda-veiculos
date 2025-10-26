@@ -17,5 +17,7 @@ public interface VendaJpaRepository extends JpaRepository<VendaJpaEntity, Long> 
 
     List<VendaJpaEntity> findAllByOrderByValorVendaDesc();
 
+    List<VendaJpaEntity> findAllByOrderByValorVendaAsc();
+
     List<VendaJpaEntity> findByStatusPagamento(StatusPagamento statusPagamento);
 }

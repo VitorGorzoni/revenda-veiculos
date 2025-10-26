@@ -19,7 +19,7 @@ public class OpenApiConfig {
                 .info(new Info()
                         .title("API de Revenda de Veículos")
                         .version("1.0.0")
-                        .description("Sistema de gerenciamento de revenda de veículos seguindo Clean Architecture")
+                        .description("Sistema de gerenciamento de revenda de veículos")
                         .contact(new Contact()
                                 .name("Equipe de Desenvolvimento")
                                 .email("contato@revenda.com"))

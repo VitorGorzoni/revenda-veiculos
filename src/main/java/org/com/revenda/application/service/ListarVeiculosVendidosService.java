@@ -19,8 +19,7 @@ public class ListarVeiculosVendidosService implements ListarVeiculosVendidosUseC
 
     @Override
     public List<Venda> execute() {
-        log.debug("Listando veículos vendidos");
-        return vendaPersistenceGateway.findAllOrderByValorVendaDesc();
+        log.debug("Listando veículos vendidos ordenados por preço (menor para maior)");
+        return vendaPersistenceGateway.findAllOrderByValorVendaAsc();
     }
 }
-
